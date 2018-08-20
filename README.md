@@ -1,4 +1,4 @@
-# HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Intellisense
+# HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
 
 
 One of the key factors whether technology will be successful and accepted by users/consumers
@@ -26,15 +26,18 @@ NOTE: this is personal attempt to learn MSBuild via solving some problems and co
 so any kind of suggestions, ideas, constructive criticism is accepted.
 
 
-## Code Intellisense for Managed Callable Wrappers
+## Decompilers support 
 
 ## Usage
 
-1.  install nuget package `HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Intellisense`
+1.  install nuget package `HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers`
 
-2.  do the bindings and enjoy code completion in MCW C# code
+2.  do the bindings and decompiled code will be in `./holisticware-generated/decompilers`
 
 3.  uninstall nuget package after bindings are done
+
+NOTE: support for SDK style project is ongoing work due to lack of knowledge about file inclusion
+mechanisms (Default).
 
 ## Motivation
 
@@ -45,69 +48,44 @@ apps, but bindings projects for testing MSBuild tasks that are supposed to fix t
 There are 2 bindings projects in `./samples` folder - one classic Xamarin.Android bindings
 project and other with new "SDK style project" flavour.
 
-Xamarin Android bindings tools (bindings generator) emit MCW (C# wrapper code) to
+In some cases Xamarin.Android bindings tools (`jar2xml` and `class-parse`) cannot "surface" 
+certain java API for various reasons (generics, obuscation, even bugs...).
 
-```
-<!--
-MCWs C# code is emitted to folowing folder:
-$(IntermediateOutputPath = "obj/$(Configuration)/generated/src/"
-$(IntermediateOutputPath = "obj/Debug/generated/src/"
-$(IntermediateOutputPath = "obj/Release/generated/src/"
--->
-<BindingMCWSourceFiles Include="$(IntermediateOutputPath)\generated\src\*"></BindingMCWSourceFiles>  
-```
+In this case it is possible to inspect `*.jar` files (and `*.aar` of course) with various
+decompilers for java binaries and to analyse the reasons why classes were not "surfaced" to
+C# API (MCWs).
 
-Normally this code is included in build process, but not in the bindings project itself, so
-IDE intellisense (code completion) does not work and very often navigation through generated
-code is needed when fixing compile (C#) errors due differences between c# and java.
+There are several decompilers with UI options:
 
-Go ahead clone this repo, open solution in the `./samples` folder and try to compile project
-`Sample.XamarinAndroid.Bindings.Library`. This is classic Xamarin.Android bindings project
-to bind Google GRPC Stub library (jar). There should be 2 errors from MCW C# code. Clicking
-on the error code will be opened in the IDE, but user cannot navigate to generated classes
-(for 1st error for example `global::IO.Grpc.Stub.IStreamObserver`).
+1.	Luyten
 
-For years one personal trick to obtain intellisense was to add following code to the bindings project:
+2.	JD-GUI
 
-```
-<ItemGroup>
-	<Compile Include="obj\Debug\generated\src\*.cs" />
-	<Compile Include="obj\Release\generated\src\*.cs" />
-	<None Include="obj\Debug\api.xml" />
-	<None Include="obj\Release\api.xml" />
-</ItemGroup>
-```
+3.	...
 
-or 
+and of course several commandline options:
 
-```
-<ItemGroup>
-	<Compile Include="obj\$(Configuration)\generated\src\*.cs" />
-	<None Include="obj\$(Configuration)\api.xml" />
-</ItemGroup>
-```
+1.	`javap`
 
-Adding this code to the project enables code completion and navigation, so when the file with 
-generated C# MCW code is opened user will be able to navigate with "Go to definition" to various
-classes, interfaces etc...
+2.	procyon decompiler used by Luyten
 
-But this approach is not ideal, because next consecutive build will fail due to duplicate code
-(included dynamically with MSBuild tasks and with project code snippet from above).
+3.	CFR decompiler
 
-Go ahead and try to compile/build with above code snippet in your project.
+4. ...
 
-Error should be something like:
+This nuget package adds automatic decompiler dumps to Build target of the Xamarin.Android bindings
+projects.
 
-```
-/Library/Frameworks/Mono.framework/Versions/5.12.0/lib/mono/msbuild/15.0/bin/Roslyn/Microsoft.CSharp.Core.targets(5,5): 
-Error MSB3105: 
-The item "obj/Debug/generated/src/IO.Grpc.Stub.AbstractStub.cs" was specified more than once in the "Sources" parameter.  
-Duplicate items are not supported by the "Sources" parameter. 
-(MSB3105) (Sample.XamarinAndroid.Bindings.Library)
-```
+Dumps can be found in `./holisticware-generated/decompilers/*.class`
 
-Workaround is to remove that snippet before build and add it after the build to re-enable intellisense
-and code navigation in the IDE.
 
-This solution is less than ideal, so next improvement was to add MSBuild task that injects that
-code automagically into the project.
+## TODOs
+
+1.	MSBuild SDK style project support 
+
+2. windows platform support 
+
+3.	more parameters for customization (output folders, ...)
+
+4. 	other Android artifacts support (`*.aar`, ...)
+
