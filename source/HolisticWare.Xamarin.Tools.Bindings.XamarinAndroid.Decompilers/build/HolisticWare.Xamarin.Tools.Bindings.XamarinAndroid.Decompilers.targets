@@ -1,0 +1,118 @@
+﻿<!--
+  NuGet automatically imports this file into any project that has a PackageReference to 'SampleTasks'.
+  To see this in action, execute "dotnet restore" on the 3-NuGet example and look in the obj/ folder for
+  a file named Web.csproj.g.nuget.targets. You'll see inside that it contains an "Import" to this file.
+ -->
+<Project>
+
+    <PropertyGroup>  
+        <!--
+        <EnableDefaultItems>false</EnableDefaultItems>
+        -->
+        <BindingsHelperFolder>holisticware-generated\decompilers</BindingsHelperFolder>  
+        <BindningApiXml>$(IntermediateOutputPath)\api.xml</BindningApiXml>  
+    </PropertyGroup>  
+     <ItemGroup>
+        <!--
+        MCWs C# code is emitted to folowing folder:
+        $(IntermediateOutputPath = "obj/$(Configuration)/generated/src/"
+        $(IntermediateOutputPath = "obj/Debug/generated/src/"
+        $(IntermediateOutputPath = "obj/Release/generated/src/"
+        -->
+        <BindingMCWSourceFiles Include="$(IntermediateOutputPath)\generated\src\*"></BindingMCWSourceFiles>  
+        <Compile Include="$(BindingsHelperFolder)\*.cs" />
+    </ItemGroup>
+    
+    <Target 
+        Name="BindingsHelpersClean" 
+        BeforeTargets="Build;Clean"
+        >  
+        <Message Text="mc++ AfterTargets=Clean" />  
+        <RemoveDir Directories="$(BindingsHelperFolder)" />  
+    </Target>
+    
+    <Target 
+        Name="BindingsHelpersInit" 
+        BeforeTargets="CoreCompile"
+        >  
+        <Message Text="mc++ AfterTargets=Build" />  
+        <MakeDir Directories="$(BindingsHelperFolder)" />  
+    </Target>
+
+
+    <!--
+AvailableItemName
+    EmbeddedJar
+    EmbeddedNativeLibrary
+    EmbeddedReferenceJar
+    InputJar
+    JavaDocIndex
+    JavaDocJar
+    JavaSourceJar
+    LibraryProjectProperties
+    LibraryProjectZip
+    ReferenceJar
+    TransformFile
+    -->
+
+    
+    <!--
+    Decompiling with JavaP
+    https://github.com/moljac/HolisticWare.WebSite.CompositeC1.Content.MarkDown/blob/master/xamarin/products/xamarin-platform/traditional-standard/xamarin-android/advanced/bindings/java-bindings/analysis-java-binaries-jars-decompiling.md
+    
+    javap \
+        -classpath ../../../../externals/android/grpc-stub-1.14.0.jar \
+            $(jar -tf ../../../../externals/android/grpc-stub-1.14.0.jar | grep "class$" | sed s/\.class$//) \
+            >> grpc-stub-1.14.0.jar.class.java.txt
+
+                javap -classpath ../../../../externals/android/grpc-stub-1.14.0.jar \
+                        \$\(jar -tf ../../../../externals/android/grpc-stub-1.14.0.jar | grep &quot;class$&quot; | sed s/\.class$//\) \
+                        >> grpc-stub-1.14.0.jar.class.java.txt
+
+    <Target
+        Name="DecompileJavaJavaP" 
+        BeforeTargets="CoreCompile"
+        >
+        <Exec 
+            Command="javap -classpath @(EmbeddedJar) $(jar -tf @(EmbeddedJar) | grep &quot;class$&quot; | sed &quot;s/\.class$//&quot; ) >> javap.dump.class"
+            /> 
+    </Target>
+    -->
+
+    <!--
+    Decompiling with Procyon
+    https://bitbucket.org/mstrobel/procyon/wiki/Java%20Decompiler
+
+    java \
+        -jar ./procyon-decompiler-0.5.30.jar \
+        -jar ../../../../externals/android/grpc-stub-1.14.0.jar \
+        dump/
+    -->
+    <Target
+        Name="DecompileJavaProcyon" 
+        BeforeTargets="CoreCompile"
+        >
+        <Exec 
+            Command="java -jar ./lib/procyon-decompiler-0.5.30.jar -jar @(EmbeddedJar) > $(BindingsHelperFolder)\procyon.dump.class"
+            /> 
+    </Target>
+
+
+    <!--
+    Decompiling with CFR
+    http://www.benf.org/other/cfr/
+
+    java \
+        -jar ./cfr_0_132.jar \
+        -jar ../../../../externals/android/grpc-protobuf-lite-1.14.0.jar
+    -->
+    <Target
+        Name="DecompileJavaCFR" 
+        BeforeTargets="CoreCompile"
+        >
+        <Exec 
+            Command="java -jar ./lib/cfr_0_132.jar -jar @(EmbeddedJar) > $(BindingsHelperFolder)\cfr.dump.class"
+            /> 
+    </Target>
+
+</Project>
