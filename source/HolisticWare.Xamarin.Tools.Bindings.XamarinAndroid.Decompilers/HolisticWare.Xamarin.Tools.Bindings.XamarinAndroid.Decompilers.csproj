@@ -3,6 +3,9 @@
   HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.csproj 
   -->
   <PropertyGroup>
+    <!--
+    <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
+    -->
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <PackOnBuild>true</PackOnBuild>
     <EnableDefaultItems>false</EnableDefaultItems>
@@ -14,6 +17,21 @@
     -->
     <PropertyGroup>
         <PackOnBuild>true</PackOnBuild>
+        <!-- 
+        Suppresses the warnings about the package not having assemblies in lib/*/.dll.
+        -->
+        <NoPackageAnalysis>true</NoPackageAnalysis>
+        <!-- 
+        Change the default location where NuGet will put the build output 
+        
+           This changes the default folder where assemblies will be placed in the package.
+            The default is 'lib', but that is incorrect since these assemblies are mean to be used
+            by MSBuild, and to meant to be referenced as API from the NuGet package.
+        
+            tools/
+            tasks/
+        -->
+        <BuildOutputTargetFolder>tools</BuildOutputTargetFolder>
         <!-- 
         put the package output into a nuget test folder 
         -->
@@ -38,19 +56,11 @@
         <RepositoryUrl>
             https://github.com/moljac/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
         </RepositoryUrl>
-        <VersionPrefix>0.0.1</VersionPrefix>
-        <!--
+        <VersionPrefix>0.0.2</VersionPrefix>
         <VersionSuffix>alpha-$([System.DateTime]::Now.ToString('yyyyMMddHHmmss'))</VersionSuffix>
-        -->
         <PackageVersion>$(Version)</PackageVersion>
-        <!--
-          This changes the default folder where assemblies will be placed in the package.
-          The default is 'lib', but that is incorrect since these assemblies are mean to be used
-          by MSBuild, and to meant to be referenced as API from the NuGet package.
-        -->
-        <BuildOutputTargetFolder>tools</BuildOutputTargetFolder>
         <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
-        <PackageTags>xamarin, android, bindings, google, grpc, stub </PackageTags>
+        <PackageTags>xamarin, android, bindings, utilities, decompilers </PackageTags>
     </PropertyGroup>
     
   <ItemGroup>
@@ -62,24 +72,28 @@
     <PackageReference Include="Microsoft.Build.Framework" Version="15.8.166" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Build.Tasks.Core" Version="15.8.166" PrivateAssets="All" />
     <PackageReference Include="Microsoft.Build.Utilities.Core" Version="15.8.166" PrivateAssets="All" />
+    <!-- 
+        marks all packages as 'local only' so they don't end up in the nuspec 
+    -->
+    <PackageReference Update="@(PackageReference)" PrivateAssets="All" />        
   </ItemGroup>
 
     
   <ItemGroup>
     <Folder Include="build\" />
     <Content Include="build\**\*" PackagePath="build\" />
+    <Folder Include="buildMultiTargeting\" />
+    <Content Include="buildMultiTargeting\**\*" PackagePath="buildMultiTargeting\" />
     <Folder Include="lib\" />
-    <Folder Include="holisticware-generated\" />
-    <Content Include="holisticware-generated\.gitignore" />
     <Content Include="lib\cfr_0_132.jar" />
     <Content Include="lib\procyon-decompiler-0.5.30.jar" />
+    <Content Include="lib\Bytecode-Viewer-2.9.11.jar" />
+    <Folder Include="holisticware-generated\" />
+    <Content Include="holisticware-generated\.gitignore" />
     <Content Include="msbuild.rsp" />
   </ItemGroup>
+
   <ItemGroup>
-    <None Remove="content\msbuild.rsp" />
-    <None Remove="content\lib\.DS_Store" />
-    <None Remove="holisticware-generated\.gitignore" />
-    <None Remove="lib\cfr_0_132.jar" />
-    <None Remove="lib\procyon-decompiler-0.5.30.jar" />
+    <Compile Include="DecompilerTaskForJavaBinaries.cs" />
   </ItemGroup>
 </Project>

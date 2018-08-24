@@ -93,7 +93,7 @@ AvailableItemName
         BeforeTargets="CoreCompile"
         >
         <Exec 
-            Command="java -jar ./lib/procyon-decompiler-0.5.30.jar -jar @(EmbeddedJar) > $(BindingsHelperFolder)\procyon.dump.class"
+            Command="java -jar ./lib/procyon-decompiler-0.5.30.jar -jar @(EmbeddedJar) > $(BindingsHelperFolder)\procyon.1.dump.class"
             /> 
     </Target>
 
@@ -111,8 +111,60 @@ AvailableItemName
         BeforeTargets="CoreCompile"
         >
         <Exec 
-            Command="java -jar ./lib/cfr_0_132.jar -jar @(EmbeddedJar) > $(BindingsHelperFolder)\cfr.dump.class"
+            Command="java -jar ./lib/cfr_0_132.jar -jar @(EmbeddedJar) > $(BindingsHelperFolder)\cfr.1.dump.class"
             /> 
+    </Target>
+    
+    <!--
+    java -jar Bytecode-Viewer-2.9.11.jar -help
+    https://the.bytecode.club - Created by @Konloch - Bytecode Viewer 2.9.11, FatJar: true
+    -help                         Displays the help menu
+    -list                         Displays the available decompilers
+    -decompiler <decompiler>      Selects the decompiler, procyon by default
+    -i <input file>               Selects the input file
+    -o <output file>              Selects the output file
+    -t <target classname>         Must either be the fully qualified classname or "all" to decompile all as zip
+    -nowait                       Doesn't wait for the user to read the CLI messages
+    -->
+    
+  <PropertyGroup>
+    <TaskFolder>netstandard2.0</TaskFolder>
+    <!--
+    <TaskFolder Condition=" '$(MSBuildRuntimeType)' != 'Core' ">net46</TaskFolder>
+    -->
+    <TaskAssembly>$(MSBuildThisFileDirectory)..\tools\$(TaskFolder)\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.dll</TaskAssembly>
+  </PropertyGroup>
+
+  <UsingTask 
+        TaskName="HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries" 
+        AssemblyFile="$(TaskAssembly)" 
+        />
+    <Target
+        Name="Run_DecompilerTaskForJavaBinaries" 
+        BeforeTargets="CoreCompile"
+        >
+        <Message Text="mc++ Target=DecompilerTaskForJavaBinaries"></Message>
+        <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
+            Executable="javap"
+            JarBinaryDecompiler="javap"
+            JarBinaryAndroidArtifact="@(EmbeddedJar)"
+            Options="  > $(BindingsHelperFolder)/javap.2.dump.class"
+            >            
+        </HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries>
+        <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
+            Executable="java"
+            JarBinaryDecompiler="lib/procyon-decompiler-0.5.30.jar"
+            JarBinaryAndroidArtifact="@(EmbeddedJar)"
+            Options="  > $(BindingsHelperFolder)/procyon.2.dump.class"
+            >            
+        </HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries>
+        <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
+            Executable="java"
+            JarBinaryDecompiler="lib/cfr_0_132.jar"
+            JarBinaryAndroidArtifact="@(EmbeddedJar)"
+            Options=" > $(BindingsHelperFolder)/cfr.2.dump.class"
+            >            
+        </HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries>
     </Target>
 
 </Project>
