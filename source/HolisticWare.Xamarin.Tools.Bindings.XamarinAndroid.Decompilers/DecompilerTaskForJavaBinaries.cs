@@ -44,19 +44,37 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
 
             if (Executable.ToLower().Equals("javap"))
             {
-                filename_error = "holisticware-generated/decompilers/error-javap.log";
-                filename_output = "holisticware-generated/decompilers/output-javap.log";
                 /*
                 javap \
                     -classpath ../../../../externals/android/grpc-stub-1.14.0.jar \
                         $(jar -tf ../../../../externals/android/grpc-stub-1.14.0.jar | grep "class$" | sed s/\.class$//) \
                         >> grpc-stub-1.14.0.jar.class.java.txt
+
+                handling stdout and stderr in .NET Process for such complex one liner is a bit messy
+
+                workaround splitting into 2 steps
+
+                1. jar -tf ../../ externals / android / grpc - stub - 1.14.0.jar 
+                2. javap -classpath STRING_FROM_ABOVE
                 */
+
+                filename_error = "holisticware-generated/decompilers/error-jar-tf.log";
+                filename_output = "holisticware-generated/decompilers/output-jar-tf.classes";
+                (string o, string e) se;
+                se = ProcessStart
+                (
+                    $@"/bin/bash",
+                    $" -c \"jar -tf {JarBinaryAndroidArtifact} | grep \"class$\" | sed s/\\.class$// \""
+                );
+
+                filename_error = "holisticware-generated/decompilers/error-javap.log";
+                filename_output = "holisticware-generated/decompilers/output-javap.classes";
                 ProcessStart
                 (
                     $@"javap",
-                    $"-classpath {JarBinaryAndroidArtifact} $(jar -tf {JarBinaryAndroidArtifact} | grep \"class$\" | sed s/\\.class$//) {Options}"
+                    $" -classpath {JarBinaryAndroidArtifact} {se.o}"
                 );
+                // 
             }
             else
             {
@@ -64,7 +82,7 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                 {
                     case "lib/procyon-decompiler-0.5.30.jar":
                         filename_error = "holisticware-generated/decompilers/error-procyon.log";
-                        filename_output = "holisticware-generated/decompilers/output-procyon.log";
+                        filename_output = "holisticware-generated/decompilers/output-procyon.classes";
                         /*
                         java \
                             -jar ./procyon-decompiler-0.5.30.jar \
@@ -79,7 +97,7 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                         break;
                     case "lib/cfr_0_132.jar":
                         filename_error = "holisticware-generated/decompilers/error-cfr.log";
-                        filename_output = "holisticware-generated/decompilers/output-cfr.log";
+                        filename_output = "holisticware-generated/decompilers/output-cfr.classes";
                         /*
                         java \
                             -jar ./cfr_0_132.jar \
@@ -93,7 +111,7 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                         break;
                     case "lib/bytecode-viewer-2.9.11.jar":
                         filename_error = "holisticware-generated/decompilers/error-bytecode-viewer.log";
-                        filename_output = "holisticware-generated/decompilers/output-bytecode-viewer.log";
+                        filename_output = "holisticware-generated/decompilers/output-bytecode-viewer.classes";
                         ProcessStart
                         (
                             $@"java",
@@ -113,7 +131,7 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
         string filename_output;
         string filename_error;
 
-        protected void ProcessStart(string executable, string arguments )
+        protected (string Output, string Error) ProcessStart(string executable, string arguments )
         {
             Log.LogMessage($"                   ProcessStart executable:");
             Log.LogMessage($@"                   {executable} \");
@@ -132,11 +150,14 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
             p.ErrorDataReceived += ErrorDataReceived;
             p.Start();
 
+            string output = null;
+            string error = null;
+
             using (System.IO.StreamReader so = p.StandardOutput)
             using (System.IO.StreamReader se = p.StandardError)
             {
-                string output = so.ReadToEnd();
-                string error = se.ReadToEnd();
+                output = so.ReadToEnd();
+                error = se.ReadToEnd();
                 p.WaitForExit(20000);
 
                 using (System.IO.StreamWriter file = new System.IO.StreamWriter(filename_output))
@@ -153,7 +174,7 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                 }
             }
 
-            return;
+            return (output, error);
         }
 
         protected void OutputDataReceived(object sender, System.Diagnostics.DataReceivedEventArgs e)

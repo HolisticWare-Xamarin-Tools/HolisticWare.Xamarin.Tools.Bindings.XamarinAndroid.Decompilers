@@ -148,21 +148,21 @@ AvailableItemName
             Executable="javap"
             JarBinaryDecompiler="javap"
             JarBinaryAndroidArtifact="@(EmbeddedJar)"
-            Options="  > $(BindingsHelperFolder)/javap.2.dump.class"
+            Options=" "
             >            
         </HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries>
         <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
             Executable="java"
             JarBinaryDecompiler="lib/procyon-decompiler-0.5.30.jar"
             JarBinaryAndroidArtifact="@(EmbeddedJar)"
-            Options="  > $(BindingsHelperFolder)/procyon.2.dump.class"
+            Options=" "
             >            
         </HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries>
         <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
             Executable="java"
             JarBinaryDecompiler="lib/cfr_0_132.jar"
             JarBinaryAndroidArtifact="@(EmbeddedJar)"
-            Options=" > $(BindingsHelperFolder)/cfr.2.dump.class"
+            Options=" "
             >            
         </HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries>
     </Target>
