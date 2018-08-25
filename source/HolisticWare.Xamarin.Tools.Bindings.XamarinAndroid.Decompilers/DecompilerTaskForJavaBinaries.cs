@@ -44,6 +44,8 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
 
             if (Executable.ToLower().Equals("javap"))
             {
+                filename_error = "holisticware-generated/decompilers/error-javap.log";
+                filename_output = "holisticware-generated/decompilers/output-javap.log";
                 /*
                 javap \
                     -classpath ../../../../externals/android/grpc-stub-1.14.0.jar \
@@ -53,7 +55,7 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                 ProcessStart
                 (
                     $@"javap",
-                    $@"-classpath {JarBinaryAndroidArtifact} $(jar -tf {JarBinaryAndroidArtifact} | grep \"class$\" | sed s/\.class$//) {Options}"
+                    $"-classpath {JarBinaryAndroidArtifact} $(jar -tf {JarBinaryAndroidArtifact} | grep \"class$\" | sed s/\\.class$//) {Options}"
                 );
             }
             else
@@ -61,6 +63,8 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                 switch(JarBinaryDecompiler.ToLower())
                 {
                     case "lib/procyon-decompiler-0.5.30.jar":
+                        filename_error = "holisticware-generated/decompilers/error-procyon.log";
+                        filename_output = "holisticware-generated/decompilers/output-procyon.log";
                         /*
                         java \
                             -jar ./procyon-decompiler-0.5.30.jar \
@@ -74,6 +78,8 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                         );
                         break;
                     case "lib/cfr_0_132.jar":
+                        filename_error = "holisticware-generated/decompilers/error-cfr.log";
+                        filename_output = "holisticware-generated/decompilers/output-cfr.log";
                         /*
                         java \
                             -jar ./cfr_0_132.jar \
@@ -86,6 +92,8 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                         );
                         break;
                     case "lib/bytecode-viewer-2.9.11.jar":
+                        filename_error = "holisticware-generated/decompilers/error-bytecode-viewer.log";
+                        filename_output = "holisticware-generated/decompilers/output-bytecode-viewer.log";
                         ProcessStart
                         (
                             $@"java",
@@ -102,6 +110,9 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
             return !Log.HasLoggedErrors;
         }
 
+        string filename_output;
+        string filename_error;
+
         protected void ProcessStart(string executable, string arguments )
         {
             Log.LogMessage($"                   ProcessStart executable:");
@@ -113,10 +124,34 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
             pi.RedirectStandardOutput = true;
             pi.RedirectStandardError = true;
 
+
             System.Diagnostics.Process p = new System.Diagnostics.Process();
+            p.EnableRaisingEvents = true;
             p.StartInfo = pi;
             p.OutputDataReceived += OutputDataReceived;
             p.ErrorDataReceived += ErrorDataReceived;
+            p.Start();
+
+            using (System.IO.StreamReader so = p.StandardOutput)
+            using (System.IO.StreamReader se = p.StandardError)
+            {
+                string output = so.ReadToEnd();
+                string error = se.ReadToEnd();
+                p.WaitForExit(20000);
+
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(filename_output))
+                {
+                    file.WriteLine(output);
+                    file.Flush();
+                    file.Close();
+                }
+                using (System.IO.StreamWriter file = new System.IO.StreamWriter(filename_error))
+                {
+                    file.WriteLine(error);
+                    file.Flush();
+                    file.Close();
+                }
+            }
 
             return;
         }

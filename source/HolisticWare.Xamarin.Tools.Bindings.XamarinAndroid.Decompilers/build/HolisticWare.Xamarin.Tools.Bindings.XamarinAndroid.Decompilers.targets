@@ -65,9 +65,9 @@ AvailableItemName
             $(jar -tf ../../../../externals/android/grpc-stub-1.14.0.jar | grep "class$" | sed s/\.class$//) \
             >> grpc-stub-1.14.0.jar.class.java.txt
 
-                javap -classpath ../../../../externals/android/grpc-stub-1.14.0.jar \
-                        \$\(jar -tf ../../../../externals/android/grpc-stub-1.14.0.jar | grep &quot;class$&quot; | sed s/\.class$//\) \
-                        >> grpc-stub-1.14.0.jar.class.java.txt
+    javap -classpath ../../../../externals/android/grpc-stub-1.14.0.jar \
+            \$\(jar -tf ../../../../externals/android/grpc-stub-1.14.0.jar | grep &quot;class$&quot; | sed s/\.class$//\) \
+            >> grpc-stub-1.14.0.jar.class.java.txt
 
     <Target
         Name="DecompileJavaJavaP" 
