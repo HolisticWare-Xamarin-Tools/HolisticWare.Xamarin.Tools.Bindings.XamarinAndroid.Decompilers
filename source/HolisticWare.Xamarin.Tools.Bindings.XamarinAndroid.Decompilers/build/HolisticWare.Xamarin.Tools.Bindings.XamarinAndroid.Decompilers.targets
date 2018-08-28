@@ -22,7 +22,7 @@
         <BindingMCWSourceFiles Include="$(IntermediateOutputPath)\generated\src\*"></BindingMCWSourceFiles>  
         <Compile Include="$(BindingsHelperFolder)\*.cs" />
     </ItemGroup>
-    
+ 
     <Target 
         Name="BindingsHelpersClean" 
         BeforeTargets="Build;Clean"
@@ -35,40 +35,56 @@
         Name="BindingsHelpersInit" 
         BeforeTargets="CoreCompile"
         >  
-        <Message Text="mc++ AfterTargets=Build" />  
         <MakeDir Directories="$(BindingsHelperFolder)" />  
     </Target>
 
-
     <!--
-AvailableItemName
-    EmbeddedJar
-    EmbeddedNativeLibrary
-    EmbeddedReferenceJar
-    InputJar
-    JavaDocIndex
-    JavaDocJar
-    JavaSourceJar
-    LibraryProjectProperties
-    LibraryProjectZip
-    ReferenceJar
-    TransformFile
+    AvailableItemName
+        EmbeddedJar
+        EmbeddedNativeLibrary
+        EmbeddedReferenceJar
+        InputJar
+        JavaDocIndex
+        JavaDocJar
+        JavaSourceJar
+        LibraryProjectProperties
+        LibraryProjectZip
+        ReferenceJar
+        TransformFile
     -->
-
+    <Target 
+        Name="MergeArtifactsToDecompile"
+        BeforeTargets="CoreCompile"
+        >
+        <ItemGroup>
+            <ArtifactJarsToDecompile Include="@(EmbeddedJar);@(InputJar);@(ReferenceJar)" />
+        </ItemGroup>
+        <Message Text="@(EmbeddedJar)" />
+        <Message Text="@(InputJar)" />
+        <Message Text="@(ReferenceJar)" />
+        <Message Text="ArtifactJarsToDecompile" />
+        <Message Text="@(ArtifactJarsToDecompile)" />
+        <Message Text="ArtifactJarsToDecompile.Identity" />
+        <Message Text="@(ArtifactJarsToDecompile.Identity)" />
+        <Message Text="ArtifactJarsToDecompile.FullPath" />
+        <Message Text="@(ArtifactJarsToDecompile.FullPath)" />
+    </Target>
     
     <!--
     Decompiling with JavaP
     https://github.com/moljac/HolisticWare.WebSite.CompositeC1.Content.MarkDown/blob/master/xamarin/products/xamarin-platform/traditional-standard/xamarin-android/advanced/bindings/java-bindings/analysis-java-binaries-jars-decompiling.md
     
+    export JAR_ARTIFACT=../../../../externals/android/grpc-stub-1.14.0.jar
     javap \
-        -classpath ../../../../externals/android/grpc-stub-1.14.0.jar \
-            $(jar -tf ../../../../externals/android/grpc-stub-1.14.0.jar | grep "class$" | sed s/\.class$//) \
-            >> grpc-stub-1.14.0.jar.class.java.txt
+        -classpath $JAR_ARTIFACT \
+            $(jar -tf $JAR_ARTIFACT | grep "class$" | sed s/\.class$//) \
+            >> $JAR_ARTIFACT.class.java.txt
 
     javap -classpath ../../../../externals/android/grpc-stub-1.14.0.jar \
             \$\(jar -tf ../../../../externals/android/grpc-stub-1.14.0.jar | grep &quot;class$&quot; | sed s/\.class$//\) \
             >> grpc-stub-1.14.0.jar.class.java.txt
-
+            
+    TURNED OFF - NEED INFO ON CHARACTER ENCODING
     <Target
         Name="DecompileJavaJavaP" 
         BeforeTargets="CoreCompile"
@@ -83,17 +99,35 @@ AvailableItemName
     Decompiling with Procyon
     https://bitbucket.org/mstrobel/procyon/wiki/Java%20Decompiler
 
+    export JAR_ARTIFACT=../../../../externals/android/grpc-stub-1.14.0.jar
     java \
         -jar ./procyon-decompiler-0.5.30.jar \
-        -jar ../../../../externals/android/grpc-stub-1.14.0.jar \
+        -jar $JAR_ARTIFACT/grpc-stub-1.14.0.jar \
         dump/
     -->
     <Target
-        Name="DecompileJavaProcyon" 
+        Name="DecompileJavaProcyonSdk" 
+        Condition=" '$(Sdk)'=='Microsoft.NET.Sdk' " 
         BeforeTargets="CoreCompile"
         >
+        <Exec Command="pwd" ></Exec>
+        
+        <Message Text="mc++ SDK style project - Exec fails! Why? No idea..." Importance="high"></Message>
+        <!--
+        -->
+        
         <Exec 
-            Command="java -jar ./lib/procyon-decompiler-0.5.30.jar -jar @(EmbeddedJar) > $(BindingsHelperFolder)\procyon.1.dump.class"
+            Command="java -jar lib/procyon-decompiler-0.5.30.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolder)\procyon.1.dump.class"
+            /> 
+    </Target>
+    <Target 
+        Name="DecompileJavaProcyonClassic" 
+        Condition=" '$(Sdk)'!='Microsoft.NET.Sdk' " 
+        BeforeTargets="CoreCompile"
+        >
+        <Message Text="mc++ NOT SDK style project" Importance="high"></Message>
+        <Exec 
+            Command="java -jar lib/procyon-decompiler-0.5.30.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolder)\procyon.1.%(ArtifactJarsToDecompile.Filename).dump.class"
             /> 
     </Target>
 
@@ -102,18 +136,34 @@ AvailableItemName
     Decompiling with CFR
     http://www.benf.org/other/cfr/
 
+    export JAR_ARTIFACT=../../../../externals/android/grpc-stub-1.14.0.jar
     java \
         -jar ./cfr_0_132.jar \
-        -jar ../../../../externals/android/grpc-protobuf-lite-1.14.0.jar
+        -jar $JAR_ARTIFACT
     -->
     <Target
-        Name="DecompileJavaCFR" 
+        Name="DecompileJavaProcyonSdk" 
+        Condition=" '$(Sdk)'=='Microsoft.NET.Sdk' " 
         BeforeTargets="CoreCompile"
         >
+        <Exec Command="pwd" ></Exec>
+        
+        <Message Text="mc++ SDK style project - Exec fails! Why? No idea..." Importance="high"></Message>
         <Exec 
-            Command="java -jar ./lib/cfr_0_132.jar -jar @(EmbeddedJar) > $(BindingsHelperFolder)\cfr.1.dump.class"
+            Command="java -jar lib/cfr_0_132.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolder)\cfr.1.%(ArtifactJarsToDecompile.Filename).dump.class"
             /> 
     </Target>
+    <Target 
+        Name="DecompileJavaProcyonClassic" 
+        Condition=" '$(Sdk)'!='Microsoft.NET.Sdk' " 
+        BeforeTargets="CoreCompile"
+        >
+        <Message Text="mc++ NOT SDK style project" Importance="high"></Message>
+        <Exec 
+            Command="java -jar lib/cfr_0_132.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolder)\cfr.1.%(ArtifactJarsToDecompile.Filename).dump.class"
+            /> 
+    </Target>
+
     
     <!--
     java -jar Bytecode-Viewer-2.9.11.jar -help
@@ -147,21 +197,21 @@ AvailableItemName
         <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
             Executable="javap"
             JarBinaryDecompiler="javap"
-            JarBinaryAndroidArtifact="@(EmbeddedJar)"
+            JarBinaryAndroidArtifact="%(ArtifactJarsToDecompile.FullPath)"
             Options=" "
             >            
         </HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries>
         <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
             Executable="java"
             JarBinaryDecompiler="lib/procyon-decompiler-0.5.30.jar"
-            JarBinaryAndroidArtifact="@(EmbeddedJar)"
+            JarBinaryAndroidArtifact="%(ArtifactJarsToDecompile.FullPath)"
             Options=" "
             >            
         </HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries>
         <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
             Executable="java"
             JarBinaryDecompiler="lib/cfr_0_132.jar"
-            JarBinaryAndroidArtifact="@(EmbeddedJar)"
+            JarBinaryAndroidArtifact="%(ArtifactJarsToDecompile.FullPath)"
             Options=" "
             >            
         </HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries>
