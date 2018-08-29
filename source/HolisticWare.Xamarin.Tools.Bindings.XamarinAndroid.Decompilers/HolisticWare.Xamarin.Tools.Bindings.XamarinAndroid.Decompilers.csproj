@@ -56,13 +56,16 @@
         <RepositoryUrl>
             https://github.com/moljac/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
         </RepositoryUrl>
-        <VersionPrefix>0.0.3</VersionPrefix>
+        <VersionPrefix>0.0.4</VersionPrefix>
         <!--
-        <VersionSuffix>alpha-$([System.DateTime]::Now.ToString('yyyyMMddHHmmss'))</VersionSuffix>
         -->        
+        <VersionSuffix>alpha-$([System.DateTime]::Now.ToString('yyyyMMddHHmmss'))</VersionSuffix>
         <PackageVersion>$(Version)</PackageVersion>
         <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
-        <PackageTags>xamarin, android, bindings, utilities, decompilers </PackageTags>
+        <PackageTags>
+            holisticware, xamarin, android, bindings, tools, utilities, helpers, 
+            decompilers, javap, procyon, CFR, bytecode-viewer
+        </PackageTags>
     </PropertyGroup>
     
   <ItemGroup>

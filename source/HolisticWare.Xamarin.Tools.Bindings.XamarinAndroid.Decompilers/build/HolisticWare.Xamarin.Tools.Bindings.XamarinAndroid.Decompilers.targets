@@ -33,7 +33,7 @@
     
     <Target 
         Name="BindingsHelpersInit" 
-        BeforeTargets="CoreCompile"
+        AfterTargets="Build"
         >  
         <MakeDir Directories="$(BindingsHelperFolder)" />  
     </Target>
@@ -54,7 +54,7 @@
     -->
     <Target 
         Name="MergeArtifactsToDecompile"
-        BeforeTargets="CoreCompile"
+        AfterTargets="Build"
         >
         <ItemGroup>
             <ArtifactJarsToDecompile Include="@(EmbeddedJar);@(InputJar);@(ReferenceJar)" />
@@ -87,7 +87,7 @@
     TURNED OFF - NEED INFO ON CHARACTER ENCODING
     <Target
         Name="DecompileJavaJavaP" 
-        BeforeTargets="CoreCompile"
+        AfterTargets="Build"
         >
         <Exec 
             Command="javap -classpath @(EmbeddedJar) $(jar -tf @(EmbeddedJar) | grep &quot;class$&quot; | sed &quot;s/\.class$//&quot; ) >> javap.dump.class"
@@ -108,7 +108,8 @@
     <Target
         Name="DecompileJavaProcyonSdk" 
         Condition=" '$(Sdk)'=='Microsoft.NET.Sdk' " 
-        BeforeTargets="CoreCompile"
+        AfterTargets="Build"
+        ContinueOnError="true"
         >
         <Exec Command="pwd" ></Exec>
         
@@ -123,7 +124,8 @@
     <Target 
         Name="DecompileJavaProcyonClassic" 
         Condition=" '$(Sdk)'!='Microsoft.NET.Sdk' " 
-        BeforeTargets="CoreCompile"
+        AfterTargets="Build"
+        ContinueOnError="true"
         >
         <Message Text="mc++ NOT SDK style project" Importance="high"></Message>
         <Exec 
@@ -142,25 +144,41 @@
         -jar $JAR_ARTIFACT
     -->
     <Target
-        Name="DecompileJavaProcyonSdk" 
+        Name="DecompileJavaCFRSdk" 
         Condition=" '$(Sdk)'=='Microsoft.NET.Sdk' " 
-        BeforeTargets="CoreCompile"
+        AfterTargets="Build"
+        ContinueOnError="true"
         >
         <Exec Command="pwd" ></Exec>
         
         <Message Text="mc++ SDK style project - Exec fails! Why? No idea..." Importance="high"></Message>
+        <!--
+            EXEC: Error: Unable to access jarfile lib/cfr_0_132.jar (Sample.XamarinAndroid.Bindings.SDK)
+            0.0.3/build/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets(9,9): 
+            Error MSB3073: 
+            The command 
+                "\
+                java \
+                -jar lib/cfr_0_132.jar \
+                -jar /Projects/hw-tools/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers/externals/android/grpc-stub-1.14.0.jar \
+                > \
+                holisticware-generated/decompilers/cfr.1.grpc-stub-1.14.0.dump.class
+                " 
+            exited with code 1. 
+        -->        
         <Exec 
-            Command="java -jar lib/cfr_0_132.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolder)\cfr.1.%(ArtifactJarsToDecompile.Filename).dump.class"
+            Command="java -jar lib\cfr_0_132.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolder)\cfr.1.%(ArtifactJarsToDecompile.Filename).dump.class"
             /> 
     </Target>
     <Target 
-        Name="DecompileJavaProcyonClassic" 
+        Name="DecompileJavaCFRClassic" 
         Condition=" '$(Sdk)'!='Microsoft.NET.Sdk' " 
-        BeforeTargets="CoreCompile"
+        AfterTargets="Build"
+        ContinueOnError="true"
         >
         <Message Text="mc++ NOT SDK style project" Importance="high"></Message>
         <Exec 
-            Command="java -jar lib/cfr_0_132.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolder)\cfr.1.%(ArtifactJarsToDecompile.Filename).dump.class"
+            Command="java -jar &quot;lib/cfr_0_132.jar&quot; -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolder)\cfr.1.%(ArtifactJarsToDecompile.Filename).dump.class"
             /> 
     </Target>
 
@@ -191,7 +209,7 @@
         />
     <Target
         Name="Run_DecompilerTaskForJavaBinaries" 
-        BeforeTargets="CoreCompile"
+        AfterTargets="Build"
         >
         <Message Text="mc++ Target=DecompilerTaskForJavaBinaries"></Message>
         <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
