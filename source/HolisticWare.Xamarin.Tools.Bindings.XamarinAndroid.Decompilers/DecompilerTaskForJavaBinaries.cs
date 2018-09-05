@@ -32,6 +32,9 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
             set;
         }
 
+        string filename_output;
+        string filename_error;
+
         public override bool Execute()
         {
 
@@ -67,8 +70,8 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                     $" -c \"jar -tf {JarBinaryAndroidArtifact} | grep \"class$\" | sed s/\\.class$// \""
                 );
 
-                filename_error = "holisticware-generated/decompilers/error-javap.log";
-                filename_output = "holisticware-generated/decompilers/output-javap.classes";
+                filename_error = "holisticware-generated/decompilers/error-javap.custom-task.log";
+                filename_output = "holisticware-generated/decompilers/output-javap.custom-task.classes";
                 ProcessStart
                 (
                     $@"javap",
@@ -78,58 +81,56 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
             }
             else
             {
-                switch(JarBinaryDecompiler.ToLower())
+                if (JarBinaryDecompiler.ToLower().Contains("procyon-decompiler-0.5.30.jar"))
                 {
-                    case "lib/procyon-decompiler-0.5.30.jar":
-                        filename_error = "holisticware-generated/decompilers/error-procyon.log";
-                        filename_output = "holisticware-generated/decompilers/output-procyon.classes";
-                        /*
-                        java \
-                            -jar ./procyon-decompiler-0.5.30.jar \
-                            -jar ../../../../externals/android/grpc-stub-1.14.0.jar > 
+                    filename_error = "holisticware-generated/decompilers/error-procyon.custom-task.log";
+                    filename_output = "holisticware-generated/decompilers/output-procyon.custom-task.classes";
+                    /*
+                    java \
+                        -jar ./procyon-decompiler-0.5.30.jar \
+                        -jar ../../../../externals/android/grpc-stub-1.14.0.jar > 
 
-                        */
-                        ProcessStart
-                        (
-                            $@"java",
-                            $@"-jar {JarBinaryDecompiler} -jar {JarBinaryAndroidArtifact} {Options} "
-                        );
-                        break;
-                    case "lib/cfr_0_132.jar":
-                        filename_error = "holisticware-generated/decompilers/error-cfr.log";
-                        filename_output = "holisticware-generated/decompilers/output-cfr.classes";
-                        /*
-                        java \
-                            -jar ./cfr_0_132.jar \
-                            -jar ../../../../externals/android/grpc-protobuf-lite-1.14.0.jar
-                        */
-                        ProcessStart
-                        (
-                            $@"java",
-                            $@"-jar {JarBinaryDecompiler} -jar {JarBinaryAndroidArtifact} {Options} "
-                        );
-                        break;
-                    case "lib/bytecode-viewer-2.9.11.jar":
-                        filename_error = "holisticware-generated/decompilers/error-bytecode-viewer.log";
-                        filename_output = "holisticware-generated/decompilers/output-bytecode-viewer.classes";
-                        ProcessStart
-                        (
-                            $@"java",
-                            $@"-jar {Executable} -jar {JarBinaryDecompiler} "
-                        );
-                        break;
-                    default:
-                        throw new NotSupportedException($"Unrecognized Java DEcompiler {JarBinaryDecompiler}");
+                    */
+                    ProcessStart
+                    (
+                        $@"java",
+                        $@"-jar {JarBinaryDecompiler} -jar {JarBinaryAndroidArtifact} {Options} "
+                    );
                 }
-
+                else if (JarBinaryDecompiler.ToLower().Contains("cfr_0_132.jar"))
+                {
+                    filename_error = "holisticware-generated/decompilers/error-cfr.custom-task.log";
+                    filename_output = "holisticware-generated/decompilers/output-cfr.custom-task.classes";
+                    /*
+                    java \
+                        -jar ./cfr_0_132.jar \
+                        -jar ../../../../externals/android/grpc-protobuf-lite-1.14.0.jar
+                    */
+                    ProcessStart
+                    (
+                        $@"java",
+                        $@"-jar {JarBinaryDecompiler} -jar {JarBinaryAndroidArtifact} {Options} "
+                    );
+                }
+                else if (JarBinaryDecompiler.ToLower().Contains("bytecode-viewer-2.9.11.jar"))
+                {
+                    filename_error = "holisticware-generated/decompilers/error-bytecode-viewer.log";
+                    filename_output = "holisticware-generated/decompilers/output-bytecode-viewer.classes";
+                    ProcessStart
+                    (
+                        $@"java",
+                        $@"-jar {Executable} -jar {JarBinaryDecompiler} "
+                    );
+                }
+                else
+                {
+                    throw new NotSupportedException($"Unrecognized Java Decompiler {JarBinaryDecompiler}");
+                }
             }
 
             // enforcing proper correlation between Log errors and build results (success and/or failures)
             return !Log.HasLoggedErrors;
         }
-
-        string filename_output;
-        string filename_error;
 
         protected (string Output, string Error) ProcessStart(string executable, string arguments )
         {

@@ -9,34 +9,77 @@
         <!--
         <EnableDefaultItems>false</EnableDefaultItems>
         -->
-        <BindingsHelperFolder>holisticware-generated\decompilers</BindingsHelperFolder>  
-        <BindningApiXml>$(IntermediateOutputPath)\api.xml</BindningApiXml>  
+        <BindingsHelperFolder>holisticware-generated</BindingsHelperFolder>  
+        <BindingsHelperFolderInProject>$(MSBuildProjectDirectory)/$(BindingsHelperFolder)</BindingsHelperFolderInProject>  
+        
+        <BindingsHelperFolderDecompilerOutput>$(BindingsHelperFolderInProject)/decompilers</BindingsHelperFolderDecompilerOutput>  
+        <BindingsHelperFolderLibs>$(BindingsHelperFolderInProject)/lib/</BindingsHelperFolderLibs>  
+        <BindingsHelperFolderLibsInNuget>$(MSBuildThisFileDirectory)../lib/</BindingsHelperFolderLibsInNuget>
+        
     </PropertyGroup>  
-     <ItemGroup>
+    
+    <Target 
+        Name="BindingsHelpersClean" 
+        BeforeTargets="Build;Clean"
+        >  
+        <Message Text="mc++ AfterTargets=Clean" />  
+        <!--
+        <RemoveDir Directories="$(BindingsHelperFolder)" />  
+        -->
+    </Target>
+    
+    <Target 
+        Name="BindingsHelpersInit" 
+        BeforeTargets="CoreCompile"
+        >  
+        <MakeDir Directories="$(BindingsHelperFolder)" />  
+        <MakeDir Directories="$(BindingsHelperFolderLibs)" />  
+        <MakeDir Directories="$(BindingsHelperFolderDecompilerOutput)" />  
+        
+        <Exec Command="pwd"></Exec>
+        <Exec Command="ls -al $(BindingsHelperFolder)"></Exec>
+        <Exec Command="ls -al $(BindingsHelperFolderLibs)"></Exec>
+        <Exec Command="ls -al $(BindingsHelperFolderDecompilerOutput)"></Exec>
+        <Exec Command="ls -al $(BindingsHelperFolderLibsInNuget)"></Exec>
+    </Target>
+    
+    <ItemGroup>
+        <Folder Include="$(BindingsHelperFolder)/" />
+        <Folder Include="$(BindingsHelperFolderLibs)/" />
+        <Folder Include="$(BindingsHelperFolderDecompilerOutput)/" />
+        
+        <!--
+        https://github.com/netonjm/GtkSharp.NuGet/pull/1/files
+        -->
+        <None 
+            Include="$(MSBuildThisFileDirectory)/../lib/procyon-decompiler-0.5.30.jar"
+            >
+            <Link>lib/procyon-decompiler-0.5.30.jar</Link>
+            <CopyToOutputDirectory>Allways</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <Visible>true</Visible>
+        </None>
+        <None Include="$(MSBuildThisFileDirectory)/../lib/cfr_0_132.jar">
+            <Link>lib/cfr_0_132.jar</Link>
+            <CopyToOutputDirectory>Allways</CopyToOutputDirectory>
+            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <Visible>true</Visible>
+        </None>
+        <None Include="$(MSBuildThisFileDirectory)/../lib/Bytecode-Viewer-2.9.11.jar">
+            <CopyToOutputDirectory>Allways</CopyToOutputDirectory>
+            <Visible>true</Visible>
+        </None>
+        <Folder Include="build/$(BindingsHelperFolderDecompilerOutput)/" />
+    </ItemGroup>
+    <ItemGroup>
         <!--
         MCWs C# code is emitted to folowing folder:
         $(IntermediateOutputPath = "obj/$(Configuration)/generated/src/"
         $(IntermediateOutputPath = "obj/Debug/generated/src/"
         $(IntermediateOutputPath = "obj/Release/generated/src/"
         -->
-        <BindingMCWSourceFiles Include="$(IntermediateOutputPath)\generated\src\*"></BindingMCWSourceFiles>  
-        <Compile Include="$(BindingsHelperFolder)\*.cs" />
-    </ItemGroup>
- 
-    <Target 
-        Name="BindingsHelpersClean" 
-        BeforeTargets="Build;Clean"
-        >  
-        <Message Text="mc++ AfterTargets=Clean" />  
-        <RemoveDir Directories="$(BindingsHelperFolder)" />  
-    </Target>
-    
-    <Target 
-        Name="BindingsHelpersInit" 
-        AfterTargets="Build"
-        >  
-        <MakeDir Directories="$(BindingsHelperFolder)" />  
-    </Target>
+        <BindingDecompilerBinaries Include="$(MSBuildThisFileDirectory)/../lib/*"></BindingDecompilerBinaries>  
+    </ItemGroup> 
 
     <!--
     AvailableItemName
@@ -54,20 +97,26 @@
     -->
     <Target 
         Name="MergeArtifactsToDecompile"
-        AfterTargets="Build"
+        BeforeTargets="CoreCompile"
         >
         <ItemGroup>
             <ArtifactJarsToDecompile Include="@(EmbeddedJar);@(InputJar);@(ReferenceJar)" />
         </ItemGroup>
-        <Message Text="@(EmbeddedJar)" />
-        <Message Text="@(InputJar)" />
-        <Message Text="@(ReferenceJar)" />
+        <Message Text="EmbeddedJar" />
+        <Message Text="    %(EmbeddedJar.Identity)" />
+        <Message Text="EmbeddedJar" />
+        <Message Text="    %(InputJar.Identity)" />
+        <Message Text="EmbeddedJar" />
+        <Message Text="    %(ReferenceJar.Identity)" />
         <Message Text="ArtifactJarsToDecompile" />
-        <Message Text="@(ArtifactJarsToDecompile)" />
+        <Message Text="    %(ArtifactJarsToDecompile.Identity)" />
         <Message Text="ArtifactJarsToDecompile.Identity" />
-        <Message Text="@(ArtifactJarsToDecompile.Identity)" />
+        <Message Text="    %(ArtifactJarsToDecompile.Identity)" />
         <Message Text="ArtifactJarsToDecompile.FullPath" />
-        <Message Text="@(ArtifactJarsToDecompile.FullPath)" />
+        <Message Text="    %(ArtifactJarsToDecompile.FullPath)" />
+        
+        <Message Text="BindingDecompilerBinaries.FullPath" />
+        <Message Text="    %(BindingDecompilerBinaries.FullPath)" />
     </Target>
     
     <!--
@@ -87,7 +136,7 @@
     TURNED OFF - NEED INFO ON CHARACTER ENCODING
     <Target
         Name="DecompileJavaJavaP" 
-        AfterTargets="Build"
+        BeforeTargets="CoreCompile"
         >
         <Exec 
             Command="javap -classpath @(EmbeddedJar) $(jar -tf @(EmbeddedJar) | grep &quot;class$&quot; | sed &quot;s/\.class$//&quot; ) >> javap.dump.class"
@@ -105,11 +154,19 @@
         -jar $JAR_ARTIFACT/grpc-stub-1.14.0.jar \
         dump/
     -->
+    <Target 
+        Name="DecompileJavaProcyonClassic" 
+        Condition=" '$(Sdk)'!='Microsoft.NET.Sdk' " 
+        BeforeTargets="CoreCompile"
+        >
+        <Exec 
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/procyon-decompiler-0.5.30.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).procyon.dump.cli.classes"
+            /> 
+    </Target>
     <Target
         Name="DecompileJavaProcyonSdk" 
         Condition=" '$(Sdk)'=='Microsoft.NET.Sdk' " 
-        AfterTargets="Build"
-        ContinueOnError="true"
+        BeforeTargets="CoreCompile"
         >
         <Exec Command="pwd" ></Exec>
         
@@ -118,18 +175,7 @@
         -->
         
         <Exec 
-            Command="java -jar lib/procyon-decompiler-0.5.30.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolder)\procyon.1.dump.class"
-            /> 
-    </Target>
-    <Target 
-        Name="DecompileJavaProcyonClassic" 
-        Condition=" '$(Sdk)'!='Microsoft.NET.Sdk' " 
-        AfterTargets="Build"
-        ContinueOnError="true"
-        >
-        <Message Text="mc++ NOT SDK style project" Importance="high"></Message>
-        <Exec 
-            Command="java -jar lib/procyon-decompiler-0.5.30.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolder)\procyon.1.%(ArtifactJarsToDecompile.Filename).dump.class"
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/procyon-decompiler-0.5.30.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).procyon.dump.cli.classes"
             /> 
     </Target>
 
@@ -143,15 +189,20 @@
         -jar ./cfr_0_132.jar \
         -jar $JAR_ARTIFACT
     -->
+    <Target 
+        Name="DecompileJavaCFRClassic" 
+        Condition=" '$(Sdk)'!='Microsoft.NET.Sdk' " 
+        BeforeTargets="CoreCompile"
+        >
+        <Exec 
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/cfr_0_132.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).cfr.dump.cli.classes"
+            /> 
+    </Target>
     <Target
         Name="DecompileJavaCFRSdk" 
         Condition=" '$(Sdk)'=='Microsoft.NET.Sdk' " 
-        AfterTargets="Build"
-        ContinueOnError="true"
+        BeforeTargets="CoreCompile"
         >
-        <Exec Command="pwd" ></Exec>
-        
-        <Message Text="mc++ SDK style project - Exec fails! Why? No idea..." Importance="high"></Message>
         <!--
             EXEC: Error: Unable to access jarfile lib/cfr_0_132.jar (Sample.XamarinAndroid.Bindings.SDK)
             0.0.3/build/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets(9,9): 
@@ -167,18 +218,7 @@
             exited with code 1. 
         -->        
         <Exec 
-            Command="java -jar lib\cfr_0_132.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolder)\cfr.1.%(ArtifactJarsToDecompile.Filename).dump.class"
-            /> 
-    </Target>
-    <Target 
-        Name="DecompileJavaCFRClassic" 
-        Condition=" '$(Sdk)'!='Microsoft.NET.Sdk' " 
-        AfterTargets="Build"
-        ContinueOnError="true"
-        >
-        <Message Text="mc++ NOT SDK style project" Importance="high"></Message>
-        <Exec 
-            Command="java -jar &quot;lib/cfr_0_132.jar&quot; -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolder)\cfr.1.%(ArtifactJarsToDecompile.Filename).dump.class"
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/cfr_0_132.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).cfr.dump.cli.classes"
             /> 
     </Target>
 
@@ -209,7 +249,7 @@
         />
     <Target
         Name="Run_DecompilerTaskForJavaBinaries" 
-        AfterTargets="Build"
+        BeforeTargets="CoreCompile"
         >
         <Message Text="mc++ Target=DecompilerTaskForJavaBinaries"></Message>
         <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
@@ -221,14 +261,14 @@
         </HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries>
         <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
             Executable="java"
-            JarBinaryDecompiler="lib/procyon-decompiler-0.5.30.jar"
+            JarBinaryDecompiler="$(BindingsHelperFolderLibsInNuget)/procyon-decompiler-0.5.30.jar"
             JarBinaryAndroidArtifact="%(ArtifactJarsToDecompile.FullPath)"
             Options=" "
             >            
         </HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries>
         <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
             Executable="java"
-            JarBinaryDecompiler="lib/cfr_0_132.jar"
+            JarBinaryDecompiler="$(BindingsHelperFolderLibsInNuget)/cfr_0_132.jar"
             JarBinaryAndroidArtifact="%(ArtifactJarsToDecompile.FullPath)"
             Options=" "
             >            

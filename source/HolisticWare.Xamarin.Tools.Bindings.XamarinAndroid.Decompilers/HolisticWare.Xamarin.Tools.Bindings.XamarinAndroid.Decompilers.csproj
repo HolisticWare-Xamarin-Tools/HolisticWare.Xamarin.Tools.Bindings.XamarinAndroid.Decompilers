@@ -58,14 +58,11 @@
         </RepositoryUrl>
         <VersionPrefix>0.0.4</VersionPrefix>
         <!--
-        -->        
         <VersionSuffix>alpha-$([System.DateTime]::Now.ToString('yyyyMMddHHmmss'))</VersionSuffix>
+        -->        
         <PackageVersion>$(Version)</PackageVersion>
         <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
-        <PackageTags>
-            holisticware, xamarin, android, bindings, tools, utilities, helpers, 
-            decompilers, javap, procyon, CFR, bytecode-viewer
-        </PackageTags>
+        <PackageTags>xamarin, android, bindings, utilities, decompilers </PackageTags>
     </PropertyGroup>
     
   <ItemGroup>
@@ -84,19 +81,45 @@
   </ItemGroup>
 
     
-  <ItemGroup>
-    <Folder Include="build\" />
-    <Content Include="build\**\*" PackagePath="build\" />
-    <Folder Include="buildMultiTargeting\" />
-    <Content Include="buildMultiTargeting\**\*" PackagePath="buildMultiTargeting\" />
-    <Folder Include="lib\" />
-    <Content Include="lib\cfr_0_132.jar" />
-    <Content Include="lib\procyon-decompiler-0.5.30.jar" />
-    <Content Include="lib\Bytecode-Viewer-2.9.11.jar" />
-    <Folder Include="holisticware-generated\" />
-    <Content Include="holisticware-generated\.gitignore" />
-    <Content Include="msbuild.rsp" />
-  </ItemGroup>
+    <PropertyGroup>  
+        <!--
+        <EnableDefaultItems>false</EnableDefaultItems>
+        -->
+        <BindingsHelperFolder>$(MSBuildThisFileDirectory)/holisticware-generated</BindingsHelperFolder>  
+        <BindingsHelperFolderDecompilerOutput>$(BindingsHelperFolder)/decompilers</BindingsHelperFolderDecompilerOutput>  
+        <BindingsHelperFolderLibs>$(BindingsHelperFolder)/lib</BindingsHelperFolderLibs>  
+    </PropertyGroup>  
+    
+    <ItemGroup>
+        <None Include="$(MSBuildThisFileDirectory)/build/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" PackagePath="build/" Pack="true">
+        </None>
+        <None Include="$(MSBuildThisFileDirectory)/build/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props" PackagePath="build/" Pack="true">
+        </None>
+        <!--
+        https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#contenttargetfolders
+        https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#including-content-in-a-package
+        
+        PackagePath="lib"
+        -->
+        <Content Include="$(BindingsHelperFolder)/.gitignore" Pack="true">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="$(BindingsHelperFolderDecompilerOutput)/.gitignore" Pack="true">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <Content Include="$(BindingsHelperFolderLibs)/.gitignore" Pack="true">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
+        <None Include="$(BindingsHelperFolderLibs)/procyon-decompiler-0.5.30.jar" Pack="true" PackagePath="lib/">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="$(BindingsHelperFolderLibs)/cfr_0_132.jar" Pack="true" PackagePath="lib/">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+        <None Include="$(BindingsHelperFolderLibs)/Bytecode-Viewer-2.9.11.jar" Pack="true" PackagePath="lib/">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
 
   <ItemGroup>
     <Compile Include="DecompilerTaskForJavaBinaries.cs" />
