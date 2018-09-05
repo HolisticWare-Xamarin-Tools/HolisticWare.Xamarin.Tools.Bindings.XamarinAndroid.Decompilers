@@ -53,6 +53,10 @@
 
 
     <ItemGroup>
+        <Folder Include="Additions\" />
+        <Folder Include="Jars\" />
+    </ItemGroup>
+    <ItemGroup>
         <!--
         -->
         <TransformFile Include="Transforms\*.xml" />
@@ -63,21 +67,12 @@
         </EmbeddedJar>
     </ItemGroup>
     
-    <ItemGroup>
-        <Content Include="lib/procyon-decompiler-0.5.30.jar" />        
-        <Content Include="lib\cfr_0_132.jar" />
-        <Content Include="lib\Bytecode-Viewer-2.9.11.jar" />
-    </ItemGroup>
-
+    
   <ItemGroup>
     <PackageReference Include="MSBuild.Sdk.Extras" Version="1.4.0" PrivateAssets="All" />
-    <PackageReference Include="HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers" Version="0.0.4-alpha-20180829120702" />
+    <PackageReference Include="HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers" Version="0.0.4-alpha-20180905114803" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Additions\" />
-    <Folder Include="Jars\" />
-  </ItemGroup>
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
 
 

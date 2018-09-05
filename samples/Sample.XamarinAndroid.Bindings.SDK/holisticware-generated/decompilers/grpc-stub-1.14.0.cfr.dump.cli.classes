@@ -1,0 +1,1261 @@
+Can't load the class specified:
+org.benf.cfr.reader.util.CannotLoadClassException: -jar.class - java.io.IOException: No such file -jar.class
+/*
+ * Decompiled with CFR 0_132.
+ * 
+ * Could not load the following classes:
+ *  com.google.errorprone.annotations.DoNotMock
+ *  io.grpc.ExperimentalApi
+ */
+package io.grpc.stub;
+
+import com.google.errorprone.annotations.DoNotMock;
+import io.grpc.ExperimentalApi;
+import io.grpc.stub.CallStreamObserver;
+
+@DoNotMock
+@ExperimentalApi(value="https://github.com/grpc/grpc-java/issues/1788")
+public abstract class ServerCallStreamObserver<V>
+extends CallStreamObserver<V> {
+    public abstract boolean isCancelled();
+
+    public abstract void setOnCancelHandler(Runnable var1);
+
+    public abstract void setCompression(String var1);
+}
+
+/*
+ * Decompiled with CFR 0_132.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.base.Preconditions
+ *  io.grpc.CallOptions
+ *  io.grpc.Channel
+ *  io.grpc.ClientCall
+ *  io.grpc.ClientCall$Listener
+ *  io.grpc.ClientInterceptor
+ *  io.grpc.ExperimentalApi
+ *  io.grpc.ForwardingClientCall
+ *  io.grpc.ForwardingClientCall$SimpleForwardingClientCall
+ *  io.grpc.ForwardingClientCallListener
+ *  io.grpc.ForwardingClientCallListener$SimpleForwardingClientCallListener
+ *  io.grpc.Metadata
+ *  io.grpc.MethodDescriptor
+ *  io.grpc.Status
+ */
+package io.grpc.stub;
+
+import com.google.common.base.Preconditions;
+import io.grpc.CallOptions;
+import io.grpc.Channel;
+import io.grpc.ClientCall;
+import io.grpc.ClientInterceptor;
+import io.grpc.ExperimentalApi;
+import io.grpc.ForwardingClientCall;
+import io.grpc.ForwardingClientCallListener;
+import io.grpc.Metadata;
+import io.grpc.MethodDescriptor;
+import io.grpc.Status;
+import io.grpc.stub.AbstractStub;
+import java.util.concurrent.atomic.AtomicReference;
+
+public final class MetadataUtils {
+    private MetadataUtils() {
+    }
+
+    @ExperimentalApi(value="https://github.com/grpc/grpc-java/issues/1789")
+    public static <T extends AbstractStub<T>> T attachHeaders(T stub, Metadata extraHeaders) {
+        return (T)stub.withInterceptors(MetadataUtils.newAttachHeadersInterceptor(extraHeaders));
+    }
+
+    public static ClientInterceptor newAttachHeadersInterceptor(Metadata extraHeaders) {
+        return new HeaderAttachingClientInterceptor(extraHeaders);
+    }
+
+    @ExperimentalApi(value="https://github.com/grpc/grpc-java/issues/1789")
+    public static <T extends AbstractStub<T>> T captureMetadata(T stub, AtomicReference<Metadata> headersCapture, AtomicReference<Metadata> trailersCapture) {
+        return (T)stub.withInterceptors(MetadataUtils.newCaptureMetadataInterceptor(headersCapture, trailersCapture));
+    }
+
+    public static ClientInterceptor newCaptureMetadataInterceptor(AtomicReference<Metadata> headersCapture, AtomicReference<Metadata> trailersCapture) {
+        return new MetadataCapturingClientInterceptor(headersCapture, trailersCapture);
+    }
+
+    private static final class MetadataCapturingClientInterceptor
+    implements ClientInterceptor {
+        final AtomicReference<Metadata> headersCapture;
+        final AtomicReference<Metadata> trailersCapture;
+
+        MetadataCapturingClientInterceptor(AtomicReference<Metadata> headersCapture, AtomicReference<Metadata> trailersCapture) {
+            this.headersCapture = (AtomicReference)Preconditions.checkNotNull(headersCapture, (Object)"headersCapture");
+            this.trailersCapture = (AtomicReference)Preconditions.checkNotNull(trailersCapture, (Object)"trailersCapture");
+        }
+
+        public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> method, CallOptions callOptions, Channel next) {
+            return new MetadataCapturingClientCall(next.newCall(method, callOptions));
+        }
+
+        private final class MetadataCapturingClientCall<ReqT, RespT>
+        extends ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT> {
+            MetadataCapturingClientCall(ClientCall<ReqT, RespT> call) {
+                super(call);
+            }
+
+            public void start(ClientCall.Listener<RespT> responseListener, Metadata headers) {
+                MetadataCapturingClientInterceptor.this.headersCapture.set(null);
+                MetadataCapturingClientInterceptor.this.trailersCapture.set(null);
+                super.start((ClientCall.Listener)new MetadataCapturingClientCallListener(responseListener), headers);
+            }
+
+            private final class MetadataCapturingClientCallListener
+            extends ForwardingClientCallListener.SimpleForwardingClientCallListener<RespT> {
+                MetadataCapturingClientCallListener(ClientCall.Listener<RespT> responseListener) {
+                    super(responseListener);
+                }
+
+                public void onHeaders(Metadata headers) {
+                    MetadataCapturingClientInterceptor.this.headersCapture.set(headers);
+                    super.onHeaders(headers);
+                }
+
+                public void onClose(Status status, Metadata trailers) {
+                    MetadataCapturingClientInterceptor.this.trailersCapture.set(trailers);
+                    super.onClose(status, trailers);
+                }
+            }
+
+        }
+
+    }
+
+    private static final class HeaderAttachingClientInterceptor
+    implements ClientInterceptor {
+        private final Metadata extraHeaders;
+
+        HeaderAttachingClientInterceptor(Metadata extraHeaders) {
+            this.extraHeaders = (Metadata)Preconditions.checkNotNull((Object)extraHeaders, (Object)extraHeaders);
+        }
+
+        public <ReqT, RespT> ClientCall<ReqT, RespT> interceptCall(MethodDescriptor<ReqT, RespT> method, CallOptions callOptions, Channel next) {
+            return new HeaderAttachingClientCall(next.newCall(method, callOptions));
+        }
+
+        private final class HeaderAttachingClientCall<ReqT, RespT>
+        extends ForwardingClientCall.SimpleForwardingClientCall<ReqT, RespT> {
+            HeaderAttachingClientCall(ClientCall<ReqT, RespT> call) {
+                super(call);
+            }
+
+            public void start(ClientCall.Listener<RespT> responseListener, Metadata headers) {
+                headers.merge(HeaderAttachingClientInterceptor.this.extraHeaders);
+                super.start(responseListener, headers);
+            }
+        }
+
+    }
+
+}
+
+/*
+ * Decompiled with CFR 0_132.
+ * 
+ * Could not load the following classes:
+ *  io.grpc.MethodDescriptor
+ *  io.grpc.MethodDescriptor$MethodType
+ */
+package io.grpc.stub.annotations;
+
+import io.grpc.MethodDescriptor;
+import java.lang.annotation.Annotation;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
+
+@Retention(value=RetentionPolicy.CLASS)
+@Target(value={ElementType.METHOD})
+public @interface RpcMethod {
+    public String fullMethodName();
+
+    public Class<?> requestType();
+
+    public Class<?> responseType();
+
+    public MethodDescriptor.MethodType methodType();
+}
+
+/*
+ * Decompiled with CFR 0_132.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.base.Preconditions
+ *  com.google.errorprone.annotations.DoNotMock
+ *  io.grpc.CallCredentials
+ *  io.grpc.CallOptions
+ *  io.grpc.CallOptions$Key
+ *  io.grpc.Channel
+ *  io.grpc.ClientInterceptor
+ *  io.grpc.ClientInterceptors
+ *  io.grpc.Deadline
+ *  io.grpc.ExperimentalApi
+ *  javax.annotation.CheckReturnValue
+ *  javax.annotation.Nullable
+ *  javax.annotation.concurrent.ThreadSafe
+ */
+package io.grpc.stub;
+
+import com.google.common.base.Preconditions;
+import com.google.errorprone.annotations.DoNotMock;
+import io.grpc.CallCredentials;
+import io.grpc.CallOptions;
+import io.grpc.Channel;
+import io.grpc.ClientInterceptor;
+import io.grpc.ClientInterceptors;
+import io.grpc.Deadline;
+import io.grpc.ExperimentalApi;
+import java.util.concurrent.Executor;
+import java.util.concurrent.TimeUnit;
+import javax.annotation.CheckReturnValue;
+import javax.annotation.Nullable;
+import javax.annotation.concurrent.ThreadSafe;
+
+@DoNotMock
+@CheckReturnValue
+@ThreadSafe
+public abstract class AbstractStub<S extends AbstractStub<S>> {
+    private final Channel channel;
+    private final CallOptions callOptions;
+
+    protected AbstractStub(Channel channel) {
+        this(channel, CallOptions.DEFAULT);
+    }
+
+    protected AbstractStub(Channel channel, CallOptions callOptions) {
+        this.channel = (Channel)Preconditions.checkNotNull((Object)channel, (Object)"channel");
+        this.callOptions = (CallOptions)Preconditions.checkNotNull((Object)callOptions, (Object)"callOptions");
+    }
+
+    public final Channel getChannel() {
+        return this.channel;
+    }
+
+    public final CallOptions getCallOptions() {
+        return this.callOptions;
+    }
+
+    protected abstract S build(Channel var1, CallOptions var2);
+
+    public final S withDeadline(@Nullable Deadline deadline) {
+        return this.build(this.channel, this.callOptions.withDeadline(deadline));
+    }
+
+    public final S withDeadlineAfter(long duration, TimeUnit unit) {
+        return this.build(this.channel, this.callOptions.withDeadlineAfter(duration, unit));
+    }
+
+    @ExperimentalApi(value="https://github.com/grpc/grpc-java/issues/3605")
+    public final S withExecutor(Executor executor) {
+        return this.build(this.channel, this.callOptions.withExecutor(executor));
+    }
+
+    @ExperimentalApi(value="https://github.com/grpc/grpc-java/issues/1704")
+    public final S withCompression(String compressorName) {
+        return this.build(this.channel, this.callOptions.withCompression(compressorName));
+    }
+
+    @Deprecated
+    public final S withChannel(Channel newChannel) {
+        return this.build(newChannel, this.callOptions);
+    }
+
+    @ExperimentalApi(value="https://github.com/grpc/grpc-java/issues/1869")
+    public final <T> S withOption(CallOptions.Key<T> key, T value) {
+        return this.build(this.channel, this.callOptions.withOption(key, value));
+    }
+
+    public final /* varargs */ S withInterceptors(ClientInterceptor ... interceptors) {
+        return this.build(ClientInterceptors.intercept((Channel)this.channel, (ClientInterceptor[])interceptors), this.callOptions);
+    }
+
+    public final S withCallCredentials(CallCredentials credentials) {
+        return this.build(this.channel, this.callOptions.withCallCredentials(credentials));
+    }
+
+    public final S withWaitForReady() {
+        return this.build(this.channel, this.callOptions.withWaitForReady());
+    }
+
+    @ExperimentalApi(value="https://github.com/grpc/grpc-java/issues/2563")
+    public final S withMaxInboundMessageSize(int maxSize) {
+        return this.build(this.channel, this.callOptions.withMaxInboundMessageSize(maxSize));
+    }
+
+    @ExperimentalApi(value="https://github.com/grpc/grpc-java/issues/2563")
+    public final S withMaxOutboundMessageSize(int maxSize) {
+        return this.build(this.channel, this.callOptions.withMaxOutboundMessageSize(maxSize));
+    }
+}
+
+/*
+ * Decompiled with CFR 0_132.
+ * 
+ * Could not load the following classes:
+ *  com.google.errorprone.annotations.DoNotMock
+ *  io.grpc.ExperimentalApi
+ *  javax.annotation.Nullable
+ */
+package io.grpc.stub;
+
+import com.google.errorprone.annotations.DoNotMock;
+import io.grpc.ExperimentalApi;
+import io.grpc.stub.CallStreamObserver;
+import javax.annotation.Nullable;
+
+@DoNotMock
+@ExperimentalApi(value="https://github.com/grpc/grpc-java/issues/1788")
+public abstract class ClientCallStreamObserver<V>
+extends CallStreamObserver<V> {
+    public abstract void cancel(@Nullable String var1, @Nullable Throwable var2);
+}
+
+/*
+ * Decompiled with CFR 0_132.
+ * 
+ * Could not load the following classes:
+ *  com.google.errorprone.annotations.DoNotMock
+ *  io.grpc.ExperimentalApi
+ */
+package io.grpc.stub;
+
+import com.google.errorprone.annotations.DoNotMock;
+import io.grpc.ExperimentalApi;
+import io.grpc.stub.StreamObserver;
+
+@DoNotMock
+@ExperimentalApi(value="https://github.com/grpc/grpc-java/issues/1788")
+public abstract class CallStreamObserver<V>
+implements StreamObserver<V> {
+    public abstract boolean isReady();
+
+    public abstract void setOnReadyHandler(Runnable var1);
+
+    public abstract void disableAutoInboundFlowControl();
+
+    public abstract void request(int var1);
+
+    public abstract void setMessageCompression(boolean var1);
+}
+
+/*
+ * Decompiled with CFR 0_132.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.base.MoreObjects
+ *  com.google.common.base.MoreObjects$ToStringHelper
+ *  com.google.common.base.Preconditions
+ *  com.google.common.util.concurrent.AbstractFuture
+ *  com.google.common.util.concurrent.ListenableFuture
+ *  io.grpc.CallOptions
+ *  io.grpc.Channel
+ *  io.grpc.ClientCall
+ *  io.grpc.ClientCall$Listener
+ *  io.grpc.Metadata
+ *  io.grpc.MethodDescriptor
+ *  io.grpc.Status
+ *  io.grpc.StatusException
+ *  io.grpc.StatusRuntimeException
+ *  javax.annotation.Nullable
+ */
+package io.grpc.stub;
+
+import com.google.common.base.MoreObjects;
+import com.google.common.base.Preconditions;
+import com.google.common.util.concurrent.AbstractFuture;
+import com.google.common.util.concurrent.ListenableFuture;
+import io.grpc.CallOptions;
+import io.grpc.Channel;
+import io.grpc.ClientCall;
+import io.grpc.Metadata;
+import io.grpc.MethodDescriptor;
+import io.grpc.Status;
+import io.grpc.StatusException;
+import io.grpc.StatusRuntimeException;
+import io.grpc.stub.ClientCallStreamObserver;
+import io.grpc.stub.ClientResponseObserver;
+import io.grpc.stub.StreamObserver;
+import java.util.Iterator;
+import java.util.NoSuchElementException;
+import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.BlockingQueue;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Executor;
+import java.util.concurrent.Future;
+import java.util.concurrent.LinkedBlockingQueue;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+import javax.annotation.Nullable;
+
+public final class ClientCalls {
+    private static final Logger logger = Logger.getLogger(ClientCalls.class.getName());
+
+    private ClientCalls() {
+    }
+
+    public static <ReqT, RespT> void asyncUnaryCall(ClientCall<ReqT, RespT> call, ReqT param, StreamObserver<RespT> observer) {
+        ClientCalls.asyncUnaryRequestCall(call, param, observer, false);
+    }
+
+    public static <ReqT, RespT> void asyncServerStreamingCall(ClientCall<ReqT, RespT> call, ReqT param, StreamObserver<RespT> responseObserver) {
+        ClientCalls.asyncUnaryRequestCall(call, param, responseObserver, true);
+    }
+
+    public static <ReqT, RespT> StreamObserver<ReqT> asyncClientStreamingCall(ClientCall<ReqT, RespT> call, StreamObserver<RespT> responseObserver) {
+        return ClientCalls.asyncStreamingRequestCall(call, responseObserver, false);
+    }
+
+    public static <ReqT, RespT> StreamObserver<ReqT> asyncBidiStreamingCall(ClientCall<ReqT, RespT> call, StreamObserver<RespT> responseObserver) {
+        return ClientCalls.asyncStreamingRequestCall(call, responseObserver, true);
+    }
+
+    public static <ReqT, RespT> RespT blockingUnaryCall(ClientCall<ReqT, RespT> call, ReqT param) {
+        try {
+            return ClientCalls.getUnchecked(ClientCalls.futureUnaryCall(call, param));
+        }
+        catch (RuntimeException e) {
+            throw ClientCalls.cancelThrow(call, e);
+        }
+        catch (Error e) {
+            throw ClientCalls.cancelThrow(call, e);
+        }
+    }
+
+    public static <ReqT, RespT> RespT blockingUnaryCall(Channel channel, MethodDescriptor<ReqT, RespT> method, CallOptions callOptions, ReqT param) {
+        ThreadlessExecutor executor = new ThreadlessExecutor();
+        ClientCall call = channel.newCall(method, callOptions.withExecutor((Executor)executor));
+        try {
+            ListenableFuture<RespT> responseFuture = ClientCalls.futureUnaryCall(call, param);
+            while (!responseFuture.isDone()) {
+                try {
+                    executor.waitAndDrain();
+                }
+                catch (InterruptedException e) {
+                    Thread.currentThread().interrupt();
+                    throw Status.CANCELLED.withDescription("Call was interrupted").withCause((Throwable)e).asRuntimeException();
+                }
+            }
+            return ClientCalls.getUnchecked(responseFuture);
+        }
+        catch (RuntimeException e) {
+            throw ClientCalls.cancelThrow(call, e);
+        }
+        catch (Error e) {
+            throw ClientCalls.cancelThrow(call, e);
+        }
+    }
+
+    public static <ReqT, RespT> Iterator<RespT> blockingServerStreamingCall(ClientCall<ReqT, RespT> call, ReqT param) {
+        BlockingResponseStream<RespT> result = new BlockingResponseStream<RespT>(call);
+        ClientCalls.asyncUnaryRequestCall(call, param, result.listener(), true);
+        return result;
+    }
+
+    public static <ReqT, RespT> Iterator<RespT> blockingServerStreamingCall(Channel channel, MethodDescriptor<ReqT, RespT> method, CallOptions callOptions, ReqT param) {
+        ThreadlessExecutor executor = new ThreadlessExecutor();
+        ClientCall call = channel.newCall(method, callOptions.withExecutor((Executor)executor));
+        BlockingResponseStream result = new BlockingResponseStream(call, executor);
+        ClientCalls.asyncUnaryRequestCall(call, param, result.listener(), true);
+        return result;
+    }
+
+    public static <ReqT, RespT> ListenableFuture<RespT> futureUnaryCall(ClientCall<ReqT, RespT> call, ReqT param) {
+        GrpcFuture<RespT> responseFuture = new GrpcFuture<RespT>(call);
+        ClientCalls.asyncUnaryRequestCall(call, param, new UnaryStreamToFuture<RespT>(responseFuture), false);
+        return responseFuture;
+    }
+
+    private static <V> V getUnchecked(Future<V> future) {
+        try {
+            return future.get();
+        }
+        catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+            throw Status.CANCELLED.withDescription("Call was interrupted").withCause((Throwable)e).asRuntimeException();
+        }
+        catch (ExecutionException e) {
+            throw ClientCalls.toStatusRuntimeException(e.getCause());
+        }
+    }
+
+    private static StatusRuntimeException toStatusRuntimeException(Throwable t) {
+        for (Throwable cause = (Throwable)Preconditions.checkNotNull((Object)t, (Object)"t"); cause != null; cause = cause.getCause()) {
+            if (cause instanceof StatusException) {
+                StatusException se = (StatusException)cause;
+                return new StatusRuntimeException(se.getStatus(), se.getTrailers());
+            }
+            if (!(cause instanceof StatusRuntimeException)) continue;
+            StatusRuntimeException se = (StatusRuntimeException)cause;
+            return new StatusRuntimeException(se.getStatus(), se.getTrailers());
+        }
+        return Status.UNKNOWN.withDescription("unexpected exception").withCause(t).asRuntimeException();
+    }
+
+    private static RuntimeException cancelThrow(ClientCall<?, ?> call, Throwable t) {
+        try {
+            call.cancel(null, t);
+        }
+        catch (Throwable e) {
+            assert (e instanceof RuntimeException || e instanceof Error);
+            logger.log(Level.SEVERE, "RuntimeException encountered while closing call", e);
+        }
+        if (t instanceof RuntimeException) {
+            throw (RuntimeException)t;
+        }
+        if (t instanceof Error) {
+            throw (Error)t;
+        }
+        throw new AssertionError(t);
+    }
+
+    private static <ReqT, RespT> void asyncUnaryRequestCall(ClientCall<ReqT, RespT> call, ReqT param, StreamObserver<RespT> responseObserver, boolean streamingResponse) {
+        ClientCalls.asyncUnaryRequestCall(call, param, new StreamObserverToCallListenerAdapter<ReqT, RespT>(responseObserver, new CallToStreamObserverAdapter<ReqT>(call), streamingResponse), streamingResponse);
+    }
+
+    private static <ReqT, RespT> void asyncUnaryRequestCall(ClientCall<ReqT, RespT> call, ReqT param, ClientCall.Listener<RespT> responseListener, boolean streamingResponse) {
+        ClientCalls.startCall(call, responseListener, streamingResponse);
+        try {
+            call.sendMessage(param);
+            call.halfClose();
+        }
+        catch (RuntimeException e) {
+            throw ClientCalls.cancelThrow(call, e);
+        }
+        catch (Error e) {
+            throw ClientCalls.cancelThrow(call, e);
+        }
+    }
+
+    private static <ReqT, RespT> StreamObserver<ReqT> asyncStreamingRequestCall(ClientCall<ReqT, RespT> call, StreamObserver<RespT> responseObserver, boolean streamingResponse) {
+        CallToStreamObserverAdapter<ReqT> adapter = new CallToStreamObserverAdapter<ReqT>(call);
+        ClientCalls.startCall(call, new StreamObserverToCallListenerAdapter<ReqT, RespT>(responseObserver, adapter, streamingResponse), streamingResponse);
+        return adapter;
+    }
+
+    private static <ReqT, RespT> void startCall(ClientCall<ReqT, RespT> call, ClientCall.Listener<RespT> responseListener, boolean streamingResponse) {
+        call.start(responseListener, new Metadata());
+        if (streamingResponse) {
+            call.request(1);
+        } else {
+            call.request(2);
+        }
+    }
+
+    private static final class ThreadlessExecutor
+    implements Executor {
+        private static final Logger log = Logger.getLogger(ThreadlessExecutor.class.getName());
+        private final BlockingQueue<Runnable> queue = new LinkedBlockingQueue<Runnable>();
+
+        ThreadlessExecutor() {
+        }
+
+        public void waitAndDrain() throws InterruptedException {
+            Runnable runnable = this.queue.take();
+            while (runnable != null) {
+                try {
+                    runnable.run();
+                }
+                catch (Throwable t) {
+                    log.log(Level.WARNING, "Runnable threw exception", t);
+                }
+                runnable = this.queue.poll();
+            }
+        }
+
+        @Override
+        public void execute(Runnable runnable) {
+            this.queue.add(runnable);
+        }
+    }
+
+    private static final class BlockingResponseStream<T>
+    implements Iterator<T> {
+        private final BlockingQueue<Object> buffer = new ArrayBlockingQueue<Object>(2);
+        private final ClientCall.Listener<T> listener = new QueuingListener();
+        private final ClientCall<?, T> call;
+        private final ThreadlessExecutor threadless;
+        private Object last;
+
+        BlockingResponseStream(ClientCall<?, T> call) {
+            this(call, null);
+        }
+
+        BlockingResponseStream(ClientCall<?, T> call, ThreadlessExecutor threadless) {
+            this.call = call;
+            this.threadless = threadless;
+        }
+
+        ClientCall.Listener<T> listener() {
+            return this.listener;
+        }
+
+        private Object waitForNext() throws InterruptedException {
+            if (this.threadless == null) {
+                return this.buffer.take();
+            }
+            Object next = this.buffer.poll();
+            while (next == null) {
+                this.threadless.waitAndDrain();
+                next = this.buffer.poll();
+            }
+            return next;
+        }
+
+        @Override
+        public boolean hasNext() {
+            if (this.last == null) {
+                try {
+                    this.last = this.waitForNext();
+                }
+                catch (InterruptedException ie) {
+                    Thread.currentThread().interrupt();
+                    throw Status.CANCELLED.withDescription("interrupted").withCause((Throwable)ie).asRuntimeException();
+                }
+            }
+            if (this.last instanceof StatusRuntimeException) {
+                StatusRuntimeException e = (StatusRuntimeException)this.last;
+                throw e.getStatus().asRuntimeException(e.getTrailers());
+            }
+            return this.last != this;
+        }
+
+        @Override
+        public T next() {
+            if (!this.hasNext()) {
+                throw new NoSuchElementException();
+            }
+            try {
+                Object tmp;
+                this.call.request(1);
+                Object object = tmp = this.last;
+                return (T)object;
+            }
+            finally {
+                this.last = null;
+            }
+        }
+
+        @Override
+        public void remove() {
+            throw new UnsupportedOperationException();
+        }
+
+        private final class QueuingListener
+        extends ClientCall.Listener<T> {
+            private boolean done = false;
+
+            QueuingListener() {
+            }
+
+            public void onHeaders(Metadata headers) {
+            }
+
+            public void onMessage(T value) {
+                Preconditions.checkState((boolean)(!this.done), (Object)"ClientCall already closed");
+                BlockingResponseStream.this.buffer.add(value);
+            }
+
+            public void onClose(Status status, Metadata trailers) {
+                Preconditions.checkState((boolean)(!this.done), (Object)"ClientCall already closed");
+                if (status.isOk()) {
+                    BlockingResponseStream.this.buffer.add(BlockingResponseStream.this);
+                } else {
+                    BlockingResponseStream.this.buffer.add(status.asRuntimeException(trailers));
+                }
+                this.done = true;
+            }
+        }
+
+    }
+
+    private static final class GrpcFuture<RespT>
+    extends AbstractFuture<RespT> {
+        private final ClientCall<?, RespT> call;
+
+        GrpcFuture(ClientCall<?, RespT> call) {
+            this.call = call;
+        }
+
+        protected void interruptTask() {
+            this.call.cancel("GrpcFuture was cancelled", null);
+        }
+
+        protected boolean set(@Nullable RespT resp) {
+            return super.set(resp);
+        }
+
+        protected boolean setException(Throwable throwable) {
+            return super.setException(throwable);
+        }
+
+        protected String pendingToString() {
+            return MoreObjects.toStringHelper((Object)((Object)this)).add("clientCall", this.call).toString();
+        }
+    }
+
+    private static final class UnaryStreamToFuture<RespT>
+    extends ClientCall.Listener<RespT> {
+        private final GrpcFuture<RespT> responseFuture;
+        private RespT value;
+
+        UnaryStreamToFuture(GrpcFuture<RespT> responseFuture) {
+            this.responseFuture = responseFuture;
+        }
+
+        public void onHeaders(Metadata headers) {
+        }
+
+        public void onMessage(RespT value) {
+            if (this.value != null) {
+                throw Status.INTERNAL.withDescription("More than one value received for unary call").asRuntimeException();
+            }
+            this.value = value;
+        }
+
+        public void onClose(Status status, Metadata trailers) {
+            if (status.isOk()) {
+                if (this.value == null) {
+                    this.responseFuture.setException((Throwable)Status.INTERNAL.withDescription("No value received for unary call").asRuntimeException(trailers));
+                }
+                this.responseFuture.set(this.value);
+            } else {
+                this.responseFuture.setException((Throwable)status.asRuntimeException(trailers));
+            }
+        }
+    }
+
+    private static final class StreamObserverToCallListenerAdapter<ReqT, RespT>
+    extends ClientCall.Listener<RespT> {
+        private final StreamObserver<RespT> observer;
+        private final CallToStreamObserverAdapter<ReqT> adapter;
+        private final boolean streamingResponse;
+        private boolean firstResponseReceived;
+
+        StreamObserverToCallListenerAdapter(StreamObserver<RespT> observer, CallToStreamObserverAdapter<ReqT> adapter, boolean streamingResponse) {
+            this.observer = observer;
+            this.streamingResponse = streamingResponse;
+            this.adapter = adapter;
+            if (observer instanceof ClientResponseObserver) {
+                ClientResponseObserver clientResponseObserver = (ClientResponseObserver)observer;
+                clientResponseObserver.beforeStart(adapter);
+            }
+            adapter.freeze();
+        }
+
+        public void onHeaders(Metadata headers) {
+        }
+
+        public void onMessage(RespT message) {
+            if (this.firstResponseReceived && !this.streamingResponse) {
+                throw Status.INTERNAL.withDescription("More than one responses received for unary or client-streaming call").asRuntimeException();
+            }
+            this.firstResponseReceived = true;
+            this.observer.onNext(message);
+            if (this.streamingResponse && this.adapter.autoFlowControlEnabled) {
+                this.adapter.request(1);
+            }
+        }
+
+        public void onClose(Status status, Metadata trailers) {
+            if (status.isOk()) {
+                this.observer.onCompleted();
+            } else {
+                this.observer.onError((Throwable)status.asRuntimeException(trailers));
+            }
+        }
+
+        public void onReady() {
+            if (this.adapter.onReadyHandler != null) {
+                this.adapter.onReadyHandler.run();
+            }
+        }
+    }
+
+    private static final class CallToStreamObserverAdapter<T>
+    extends ClientCallStreamObserver<T> {
+        private boolean frozen;
+        private final ClientCall<T, ?> call;
+        private Runnable onReadyHandler;
+        private boolean autoFlowControlEnabled = true;
+
+        CallToStreamObserverAdapter(ClientCall<T, ?> call) {
+            this.call = call;
+        }
+
+        private void freeze() {
+            this.frozen = true;
+        }
+
+        @Override
+        public void onNext(T value) {
+            this.call.sendMessage(value);
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            this.call.cancel("Cancelled by client with StreamObserver.onError()", t);
+        }
+
+        @Override
+        public void onCompleted() {
+            this.call.halfClose();
+        }
+
+        @Override
+        public boolean isReady() {
+            return this.call.isReady();
+        }
+
+        @Override
+        public void setOnReadyHandler(Runnable onReadyHandler) {
+            if (this.frozen) {
+                throw new IllegalStateException("Cannot alter onReadyHandler after call started");
+            }
+            this.onReadyHandler = onReadyHandler;
+        }
+
+        @Override
+        public void disableAutoInboundFlowControl() {
+            if (this.frozen) {
+                throw new IllegalStateException("Cannot disable auto flow control call started");
+            }
+            this.autoFlowControlEnabled = false;
+        }
+
+        @Override
+        public void request(int count) {
+            this.call.request(count);
+        }
+
+        @Override
+        public void setMessageCompression(boolean enable) {
+            this.call.setMessageCompression(enable);
+        }
+
+        @Override
+        public void cancel(@Nullable String message, @Nullable Throwable cause) {
+            this.call.cancel(message, cause);
+        }
+    }
+
+}
+
+/*
+ * Decompiled with CFR 0_132.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.base.Preconditions
+ *  io.grpc.ExperimentalApi
+ */
+package io.grpc.stub;
+
+import com.google.common.base.Preconditions;
+import io.grpc.ExperimentalApi;
+import io.grpc.stub.CallStreamObserver;
+import java.util.Iterator;
+
+@ExperimentalApi
+public final class StreamObservers {
+    public static <V> void copyWithFlowControl(final Iterator<V> source, CallStreamObserver<V> target) {
+        Preconditions.checkNotNull(source, (Object)"source");
+        Preconditions.checkNotNull(target, (Object)"target");
+        final class FlowControllingOnReadyHandler
+        implements Runnable {
+            FlowControllingOnReadyHandler() {
+            }
+
+            @Override
+            public void run() {
+                while (CallStreamObserver.this.isReady() && source.hasNext()) {
+                    CallStreamObserver.this.onNext(source.next());
+                }
+                if (!source.hasNext()) {
+                    CallStreamObserver.this.onCompleted();
+                }
+            }
+        }
+        target.setOnReadyHandler(target.new FlowControllingOnReadyHandler());
+    }
+
+    public static <V> void copyWithFlowControl(Iterable<V> source, CallStreamObserver<V> target) {
+        Preconditions.checkNotNull(source, (Object)"source");
+        StreamObservers.copyWithFlowControl(source.iterator(), target);
+    }
+
+}
+
+/*
+ * Decompiled with CFR 0_132.
+ * 
+ * Could not load the following classes:
+ *  io.grpc.ExperimentalApi
+ */
+package io.grpc.stub;
+
+import io.grpc.ExperimentalApi;
+import io.grpc.stub.ClientCallStreamObserver;
+import io.grpc.stub.StreamObserver;
+
+@ExperimentalApi
+public interface ClientResponseObserver<ReqT, RespT>
+extends StreamObserver<RespT> {
+    public void beforeStart(ClientCallStreamObserver<ReqT> var1);
+}
+
+/*
+ * Decompiled with CFR 0_132.
+ */
+package io.grpc.stub;
+
+public interface StreamObserver<V> {
+    public void onNext(V var1);
+
+    public void onError(Throwable var1);
+
+    public void onCompleted();
+}
+
+/*
+ * Decompiled with CFR 0_132.
+ * 
+ * Could not load the following classes:
+ *  com.google.common.annotations.VisibleForTesting
+ *  com.google.common.base.Preconditions
+ *  io.grpc.Metadata
+ *  io.grpc.MethodDescriptor
+ *  io.grpc.MethodDescriptor$MethodType
+ *  io.grpc.ServerCall
+ *  io.grpc.ServerCall$Listener
+ *  io.grpc.ServerCallHandler
+ *  io.grpc.Status
+ *  io.grpc.StatusRuntimeException
+ */
+package io.grpc.stub;
+
+import com.google.common.annotations.VisibleForTesting;
+import com.google.common.base.Preconditions;
+import io.grpc.Metadata;
+import io.grpc.MethodDescriptor;
+import io.grpc.ServerCall;
+import io.grpc.ServerCallHandler;
+import io.grpc.Status;
+import io.grpc.StatusRuntimeException;
+import io.grpc.stub.ServerCallStreamObserver;
+import io.grpc.stub.StreamObserver;
+
+public final class ServerCalls {
+    @VisibleForTesting
+    static final String TOO_MANY_REQUESTS = "Too many requests";
+    @VisibleForTesting
+    static final String MISSING_REQUEST = "Half-closed without a request";
+
+    private ServerCalls() {
+    }
+
+    public static <ReqT, RespT> ServerCallHandler<ReqT, RespT> asyncUnaryCall(UnaryMethod<ReqT, RespT> method) {
+        return ServerCalls.asyncUnaryRequestCall(method);
+    }
+
+    public static <ReqT, RespT> ServerCallHandler<ReqT, RespT> asyncServerStreamingCall(ServerStreamingMethod<ReqT, RespT> method) {
+        return ServerCalls.asyncUnaryRequestCall(method);
+    }
+
+    public static <ReqT, RespT> ServerCallHandler<ReqT, RespT> asyncClientStreamingCall(ClientStreamingMethod<ReqT, RespT> method) {
+        return ServerCalls.asyncStreamingRequestCall(method);
+    }
+
+    public static <ReqT, RespT> ServerCallHandler<ReqT, RespT> asyncBidiStreamingCall(BidiStreamingMethod<ReqT, RespT> method) {
+        return ServerCalls.asyncStreamingRequestCall(method);
+    }
+
+    private static <ReqT, RespT> ServerCallHandler<ReqT, RespT> asyncUnaryRequestCall(UnaryRequestMethod<ReqT, RespT> method) {
+        return new UnaryServerCallHandler<ReqT, RespT>(method);
+    }
+
+    private static <ReqT, RespT> ServerCallHandler<ReqT, RespT> asyncStreamingRequestCall(StreamingRequestMethod<ReqT, RespT> method) {
+        return new StreamingServerCallHandler<ReqT, RespT>(method);
+    }
+
+    public static void asyncUnimplementedUnaryCall(MethodDescriptor<?, ?> methodDescriptor, StreamObserver<?> responseObserver) {
+        Preconditions.checkNotNull(methodDescriptor, (Object)"methodDescriptor");
+        Preconditions.checkNotNull(responseObserver, (Object)"responseObserver");
+        responseObserver.onError((Throwable)Status.UNIMPLEMENTED.withDescription(String.format("Method %s is unimplemented", methodDescriptor.getFullMethodName())).asRuntimeException());
+    }
+
+    public static <T> StreamObserver<T> asyncUnimplementedStreamingCall(MethodDescriptor<?, ?> methodDescriptor, StreamObserver<?> responseObserver) {
+        ServerCalls.asyncUnimplementedUnaryCall(methodDescriptor, responseObserver);
+        return new NoopStreamObserver();
+    }
+
+    static class NoopStreamObserver<V>
+    implements StreamObserver<V> {
+        NoopStreamObserver() {
+        }
+
+        @Override
+        public void onNext(V value) {
+        }
+
+        @Override
+        public void onError(Throwable t) {
+        }
+
+        @Override
+        public void onCompleted() {
+        }
+    }
+
+    private static final class ServerCallStreamObserverImpl<ReqT, RespT>
+    extends ServerCallStreamObserver<RespT> {
+        final ServerCall<ReqT, RespT> call;
+        volatile boolean cancelled;
+        private boolean frozen;
+        private boolean autoFlowControlEnabled = true;
+        private boolean sentHeaders;
+        private Runnable onReadyHandler;
+        private Runnable onCancelHandler;
+
+        ServerCallStreamObserverImpl(ServerCall<ReqT, RespT> call) {
+            this.call = call;
+        }
+
+        private void freeze() {
+            this.frozen = true;
+        }
+
+        @Override
+        public void setMessageCompression(boolean enable) {
+            this.call.setMessageCompression(enable);
+        }
+
+        @Override
+        public void setCompression(String compression) {
+            this.call.setCompression(compression);
+        }
+
+        @Override
+        public void onNext(RespT response) {
+            if (this.cancelled) {
+                throw Status.CANCELLED.withDescription("call already cancelled").asRuntimeException();
+            }
+            if (!this.sentHeaders) {
+                this.call.sendHeaders(new Metadata());
+                this.sentHeaders = true;
+            }
+            this.call.sendMessage(response);
+        }
+
+        @Override
+        public void onError(Throwable t) {
+            Metadata metadata = Status.trailersFromThrowable((Throwable)t);
+            if (metadata == null) {
+                metadata = new Metadata();
+            }
+            this.call.close(Status.fromThrowable((Throwable)t), metadata);
+        }
+
+        @Override
+        public void onCompleted() {
+            if (this.cancelled) {
+                throw Status.CANCELLED.withDescription("call already cancelled").asRuntimeException();
+            }
+            this.call.close(Status.OK, new Metadata());
+        }
+
+        @Override
+        public boolean isReady() {
+            return this.call.isReady();
+        }
+
+        @Override
+        public void setOnReadyHandler(Runnable r) {
+            Preconditions.checkState((boolean)(!this.frozen), (Object)"Cannot alter onReadyHandler after initialization");
+            this.onReadyHandler = r;
+        }
+
+        @Override
+        public boolean isCancelled() {
+            return this.call.isCancelled();
+        }
+
+        @Override
+        public void setOnCancelHandler(Runnable onCancelHandler) {
+            Preconditions.checkState((boolean)(!this.frozen), (Object)"Cannot alter onCancelHandler after initialization");
+            this.onCancelHandler = onCancelHandler;
+        }
+
+        @Override
+        public void disableAutoInboundFlowControl() {
+            Preconditions.checkState((boolean)(!this.frozen), (Object)"Cannot disable auto flow control after initialization");
+            this.autoFlowControlEnabled = false;
+        }
+
+        @Override
+        public void request(int count) {
+            this.call.request(count);
+        }
+    }
+
+    private static interface StreamingRequestMethod<ReqT, RespT> {
+        public StreamObserver<ReqT> invoke(StreamObserver<RespT> var1);
+    }
+
+    private static interface UnaryRequestMethod<ReqT, RespT> {
+        public void invoke(ReqT var1, StreamObserver<RespT> var2);
+    }
+
+    private static final class StreamingServerCallHandler<ReqT, RespT>
+    implements ServerCallHandler<ReqT, RespT> {
+        private final StreamingRequestMethod<ReqT, RespT> method;
+
+        StreamingServerCallHandler(StreamingRequestMethod<ReqT, RespT> method) {
+            this.method = method;
+        }
+
+        public ServerCall.Listener<ReqT> startCall(ServerCall<ReqT, RespT> call, Metadata headers) {
+            ServerCallStreamObserverImpl<ReqT, RespT> responseObserver = new ServerCallStreamObserverImpl<ReqT, RespT>(call);
+            StreamObserver<ReqT> requestObserver = this.method.invoke(responseObserver);
+            responseObserver.freeze();
+            if (responseObserver.autoFlowControlEnabled) {
+                call.request(1);
+            }
+            return new StreamingServerCallListener(requestObserver, responseObserver, call);
+        }
+
+        private final class StreamingServerCallListener
+        extends ServerCall.Listener<ReqT> {
+            private final StreamObserver<ReqT> requestObserver;
+            private final ServerCallStreamObserverImpl<ReqT, RespT> responseObserver;
+            private final ServerCall<ReqT, RespT> call;
+            private boolean halfClosed = false;
+
+            StreamingServerCallListener(StreamObserver<ReqT> requestObserver, ServerCallStreamObserverImpl<ReqT, RespT> responseObserver, ServerCall<ReqT, RespT> call) {
+                this.requestObserver = requestObserver;
+                this.responseObserver = responseObserver;
+                this.call = call;
+            }
+
+            public void onMessage(ReqT request) {
+                this.requestObserver.onNext(request);
+                if (this.responseObserver.autoFlowControlEnabled) {
+                    this.call.request(1);
+                }
+            }
+
+            public void onHalfClose() {
+                this.halfClosed = true;
+                this.requestObserver.onCompleted();
+            }
+
+            public void onCancel() {
+                this.responseObserver.cancelled = true;
+                if (this.responseObserver.onCancelHandler != null) {
+                    this.responseObserver.onCancelHandler.run();
+                }
+                if (!this.halfClosed) {
+                    this.requestObserver.onError((Throwable)Status.CANCELLED.withDescription("cancelled before receiving half close").asRuntimeException());
+                }
+            }
+
+            public void onReady() {
+                if (this.responseObserver.onReadyHandler != null) {
+                    this.responseObserver.onReadyHandler.run();
+                }
+            }
+        }
+
+    }
+
+    private static final class UnaryServerCallHandler<ReqT, RespT>
+    implements ServerCallHandler<ReqT, RespT> {
+        private final UnaryRequestMethod<ReqT, RespT> method;
+
+        UnaryServerCallHandler(UnaryRequestMethod<ReqT, RespT> method) {
+            this.method = method;
+        }
+
+        public ServerCall.Listener<ReqT> startCall(ServerCall<ReqT, RespT> call, Metadata headers) {
+            Preconditions.checkArgument((boolean)call.getMethodDescriptor().getType().clientSendsOneMessage(), (Object)"asyncUnaryRequestCall is only for clientSendsOneMessage methods");
+            ServerCallStreamObserverImpl<ReqT, RespT> responseObserver = new ServerCallStreamObserverImpl<ReqT, RespT>(call);
+            call.request(2);
+            return new UnaryServerCallListener(responseObserver, call);
+        }
+
+        private final class UnaryServerCallListener
+        extends ServerCall.Listener<ReqT> {
+            private final ServerCall<ReqT, RespT> call;
+            private final ServerCallStreamObserverImpl<ReqT, RespT> responseObserver;
+            private boolean canInvoke = true;
+            private ReqT request;
+
+            UnaryServerCallListener(ServerCallStreamObserverImpl<ReqT, RespT> responseObserver, ServerCall<ReqT, RespT> call) {
+                this.call = call;
+                this.responseObserver = responseObserver;
+            }
+
+            public void onMessage(ReqT request) {
+                if (this.request != null) {
+                    this.call.close(Status.INTERNAL.withDescription(ServerCalls.TOO_MANY_REQUESTS), new Metadata());
+                    this.canInvoke = false;
+                    return;
+                }
+                this.request = request;
+            }
+
+            public void onHalfClose() {
+                if (!this.canInvoke) {
+                    return;
+                }
+                if (this.request == null) {
+                    this.call.close(Status.INTERNAL.withDescription(ServerCalls.MISSING_REQUEST), new Metadata());
+                    return;
+                }
+                UnaryServerCallHandler.this.method.invoke(this.request, this.responseObserver);
+                this.responseObserver.freeze();
+                if (this.call.isReady()) {
+                    this.onReady();
+                }
+            }
+
+            public void onCancel() {
+                this.responseObserver.cancelled = true;
+                if (this.responseObserver.onCancelHandler != null) {
+                    this.responseObserver.onCancelHandler.run();
+                }
+            }
+
+            public void onReady() {
+                if (this.responseObserver.onReadyHandler != null) {
+                    this.responseObserver.onReadyHandler.run();
+                }
+            }
+        }
+
+    }
+
+    public static interface BidiStreamingMethod<ReqT, RespT>
+    extends StreamingRequestMethod<ReqT, RespT> {
+    }
+
+    public static interface ClientStreamingMethod<ReqT, RespT>
+    extends StreamingRequestMethod<ReqT, RespT> {
+    }
+
+    public static interface ServerStreamingMethod<ReqT, RespT>
+    extends UnaryRequestMethod<ReqT, RespT> {
+    }
+
+    public static interface UnaryMethod<ReqT, RespT>
+    extends UnaryRequestMethod<ReqT, RespT> {
+    }
+
+}
+
