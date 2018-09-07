@@ -221,7 +221,6 @@
             Command="java -jar $(BindingsHelperFolderLibsInNuget)/cfr_0_132.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).cfr.dump.cli.classes"
             /> 
     </Target>
-
     
     <!--
     java -jar Bytecode-Viewer-2.9.11.jar -help
@@ -233,7 +232,84 @@
     -o <output file>              Selects the output file
     -t <target classname>         Must either be the fully qualified classname or "all" to decompile all as zip
     -nowait                       Doesn't wait for the user to read the CLI messages
+    
+    java -jar Bytecode-Viewer-2.9.11.jar -list
+        Procyon
+        CFR
+        FernFlower
+        Krakatau
+        Krakatau-Bytecode
+        JD-GUI
+        Smali    
+    
+    
+    java \
+        -jar ~/bin/Bytecode-Viewer-2.9.11.jar \
+        -t all \
+        -i ../../externals/android/grpc-protobuf-lite-1.14.0.jar  \
+        -o ./holisticware-generated/decompilers/Bytecode-Viewer-cfr.classes.zip \
+        -decompiler cfr
     -->
+    <Target
+        Name="DecompileJavaBytecodeViewerProcyon" 
+        BeforeTargets="CoreCompile"
+        >
+        <Exec 
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler Procyon -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-procyon.dump.cli.classes.zip"
+            /> 
+    </Target>
+    <Target
+        Name="DecompileJavaBytecodeViewerCFR" 
+        BeforeTargets="CoreCompile"
+        >
+        <Exec 
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler CFR -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-cfr.dump.cli.classes.zip"
+            /> 
+    </Target>
+    <Target
+        Name="DecompileJavaBytecodeViewerFernFlower" 
+        BeforeTargets="CoreCompile"
+        >
+        <Exec 
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler FernFlower -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-fernflower.dump.cli.classes.zip"
+            /> 
+    </Target>
+    <!--
+    <Target
+        Name="DecompileJavaBytecodeViewerKrakatau" 
+        BeforeTargets="CoreCompile"
+        >
+        <Exec 
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler Krakatau -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-krakatau.dump.cli.classes.zip"
+            /> 
+    </Target>
+    -->
+    <!--
+    <Target
+        Name="DecompileJavaBytecodeViewerKrakatauBytecode" 
+        BeforeTargets="CoreCompile"
+        >
+        <Exec 
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler Krakatau-Bytecode -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-krakatau-bytecode.dump.cli.classes.zip"
+            /> 
+    </Target>
+    -->
+    <Target
+        Name="DecompileJavaBytecodeViewerJDGUI" 
+        BeforeTargets="CoreCompile"
+        >
+        <Exec 
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler JD-GUI -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-jd-gui.dump.cli.classes.zip"
+            /> 
+    </Target>
+    <Target
+        Name="DecompileJavaBytecodeViewerSmali" 
+        BeforeTargets="CoreCompile"
+        >
+        <Exec 
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler Smali -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-smali.dump.cli.classes.zip"
+            /> 
+    </Target>
     
   <PropertyGroup>
     <TaskFolder>netstandard2.0</TaskFolder>
