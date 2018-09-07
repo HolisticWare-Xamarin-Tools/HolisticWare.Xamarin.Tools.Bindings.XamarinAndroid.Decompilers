@@ -56,10 +56,11 @@
         <RepositoryUrl>
             https://github.com/moljac/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
         </RepositoryUrl>
-        <VersionPrefix>0.0.4</VersionPrefix>
+        <VersionPrefix>0.0.5</VersionPrefix>
         <!--
-        <VersionSuffix>alpha-$([System.DateTime]::Now.ToString('yyyyMMddHHmmss'))</VersionSuffix>
+        VersionSuffix - For debugging and local nuget feed 
         -->        
+        <VersionSuffix>alpha-$([System.DateTime]::Now.ToString('yyyyMMddHHmmss'))</VersionSuffix>
         <PackageVersion>$(Version)</PackageVersion>
         <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
         <PackageTags>xamarin, android, bindings, utilities, decompilers </PackageTags>

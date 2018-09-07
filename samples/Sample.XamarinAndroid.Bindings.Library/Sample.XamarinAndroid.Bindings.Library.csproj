@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
-  <Import Project="..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.4-alpha-20180905114803\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props" Condition="Exists('..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.4-alpha-20180905114803\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props')" />
+  <Import Project="..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.5-alpha-20180907213324\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props" Condition="Exists('..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.5-alpha-20180907213324\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props')" />
   <Import Project="..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.4-alpha-20180829115733\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props" Condition="Exists('..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.4-alpha-20180829115733\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -50,8 +50,8 @@
   <ItemGroup>
     <None Include="Additions\AboutAdditions.txt" />
     <None Include="Jars\AboutJars.txt" />
-    <None Include="holisticware-generated\lib\.gitignore" />
     <None Include="holisticware-generated\decompilers\.gitignore" />
+    <None Include="holisticware-generated\lib\.gitignore" />
     <None Include="holisticware-generated\.gitignore" />
     <None Include="packages.config" />
   </ItemGroup>
@@ -61,12 +61,12 @@
     <TransformFile Include="Transforms\Metadata.xml" />
   </ItemGroup>
   <ItemGroup>
-    <EmbeddedJar Include="..\..\externals\android\grpc-stub-1.14.0.jar">
-      <Link>Jars\grpc-stub-1.14.0.jar</Link>
+    <EmbeddedJar Include="..\..\externals\android\grpc-protobuf-lite-1.14.0.jar">
+      <Link>Jars\grpc-protobuf-lite-1.14.0.jar</Link>
     </EmbeddedJar>
   </ItemGroup>
   <Import Project="$(MSBuildExtensionsPath)\Xamarin\Android\Xamarin.Android.Bindings.targets" />
     
   <Import Project="..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.4-alpha-20180829115733\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" Condition="Exists('..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.4-alpha-20180829115733\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets')" />
-  <Import Project="..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.4-alpha-20180905114803\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" Condition="Exists('..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.4-alpha-20180905114803\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets')" />
+  <Import Project="..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.5-alpha-20180907213324\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" Condition="Exists('..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.5-alpha-20180907213324\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets')" />
 </Project>

@@ -37,13 +37,16 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
 
         public override bool Execute()
         {
+            int position_slash_forward = JarBinaryAndroidArtifact.LastIndexOf('/');
+            int length_name = JarBinaryAndroidArtifact.Length - position_slash_forward - 4;
+            string artifact_name = JarBinaryAndroidArtifact.Substring(position_slash_forward + 1, length_name);
 
             Log.LogMessage($"DecompilerTaskForJavaBinaries.Execute: ");
             Log.LogMessage($"            Executable               : {Executable}");
             Log.LogMessage($"            JarBinaryDecompiler      : {JarBinaryDecompiler}");
             Log.LogMessage($"            JarBinaryAndroidArtifact : {JarBinaryAndroidArtifact}");
             Log.LogMessage($"            Options                  : {Options}");
-
+            Log.LogMessage($"            artifact_name            : {artifact_name}");
 
             if (Executable.ToLower().Equals("javap"))
             {
