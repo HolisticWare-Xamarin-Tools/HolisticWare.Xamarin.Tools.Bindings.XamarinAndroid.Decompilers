@@ -68,9 +68,38 @@
     </ItemGroup>
     
     
+    <PropertyGroup>
+        <!--
+            Customizations default values:
+        
+            *   CLI - commandline CLI calls from EXEC 
+        
+                due to stdout and stderr redirection and piping some calls implemented only with API (javap)
+        
+            *   API - custom tasks in C# code        
+        -->
+        <RunCLIJavaDecompilerProcyon>true</RunCLIJavaDecompilerProcyon>
+        <RunCLIJavaDecompilerCFR>true</RunCLIJavaDecompilerCFR>
+        <RunCLIJavaDecompilerBytecodeViewerProcyon>true</RunCLIJavaDecompilerBytecodeViewerProcyon>
+        <RunCLIJavaDecompilerBytecodeViewerCFR>true</RunCLIJavaDecompilerBytecodeViewerCFR>
+        <!--
+            Bytecode Viewer support for Krakatau - needs Python/PyPy support
+        -->        
+        <RunCLIJavaDecompilerBytecodeViewerKrakatau>false</RunCLIJavaDecompilerBytecodeViewerKrakatau>
+        <RunCLIJavaDecompilerBytecodeViewerKrakatauBytecode>false</RunCLIJavaDecompilerBytecodeViewerKrakatauBytecode>
+        <!--
+            Bytecode Viewer support for JD GUI - comming soon
+        -->
+        <RunCLIJavaDecompilerBytecodeViewerJDGUI>true</RunCLIJavaDecompilerBytecodeViewerJDGUI>
+        <!--
+            Bytecode Viewer support for Smali - comming soon
+        -->
+        <RunCLIJavaDecompilerBytecodeViewerSmali>true</RunCLIJavaDecompilerBytecodeViewerSmali>                
+    </PropertyGroup>
+    
   <ItemGroup>
     <PackageReference Include="MSBuild.Sdk.Extras" Version="1.4.0" PrivateAssets="All" />
-    <PackageReference Include="HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers" Version="0.0.4-alpha-20180905114803" />
+    <PackageReference Include="HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers" Version="0.0.5" />
   </ItemGroup>
 
   <Import Project="$(MSBuildSDKExtrasTargets)" Condition="Exists('$(MSBuildSDKExtrasTargets)')" />
