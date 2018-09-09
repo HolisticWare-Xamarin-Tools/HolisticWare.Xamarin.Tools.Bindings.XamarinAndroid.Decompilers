@@ -59,8 +59,8 @@
         <VersionPrefix>0.0.5</VersionPrefix>
         <!--
         VersionSuffix - For debugging and local nuget feed 
-        -->        
         <VersionSuffix>alpha-$([System.DateTime]::Now.ToString('yyyyMMddHHmmss'))</VersionSuffix>
+        -->        
         <PackageVersion>$(Version)</PackageVersion>
         <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
         <PackageTags>xamarin, android, bindings, utilities, decompilers </PackageTags>

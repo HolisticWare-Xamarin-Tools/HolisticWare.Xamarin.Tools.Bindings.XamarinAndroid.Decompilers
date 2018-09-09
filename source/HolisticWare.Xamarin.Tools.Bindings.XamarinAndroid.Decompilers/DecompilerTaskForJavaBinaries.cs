@@ -34,11 +34,12 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
 
         string filename_output;
         string filename_error;
+        string decompiler;
 
         public override bool Execute()
         {
             int position_slash_forward = JarBinaryAndroidArtifact.LastIndexOf('/');
-            int length_name = JarBinaryAndroidArtifact.Length - position_slash_forward - 4;
+            int length_name = JarBinaryAndroidArtifact.Length - position_slash_forward - 5;
             string artifact_name = JarBinaryAndroidArtifact.Substring(position_slash_forward + 1, length_name);
 
             Log.LogMessage($"DecompilerTaskForJavaBinaries.Execute: ");
@@ -64,8 +65,17 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                 2. javap -classpath STRING_FROM_ABOVE
                 */
 
-                filename_error = "holisticware-generated/decompilers/error-jar-tf.log";
-                filename_output = "holisticware-generated/decompilers/output-jar-tf.classes";
+                decompiler = "jar-tf";
+                filename_error =
+                        $"holisticware-generated" + "/" + "decompilers"
+                        + "/" +
+                        $"{artifact_name}-stderr-{decompiler}.API-custom-task.log"
+                        ;
+                filename_output =
+                        $"holisticware-generated" + "/" + "decompilers"
+                        + "/" +
+                        $"{artifact_name}-stdout-{decompiler}.API-custom-task.classes"
+                        ;
                 (string o, string e) se;
                 se = ProcessStart
                 (
@@ -73,8 +83,17 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                     $" -c \"jar -tf {JarBinaryAndroidArtifact} | grep \"class$\" | sed s/\\.class$// \""
                 );
 
-                filename_error = "holisticware-generated/decompilers/error-javap.custom-task.log";
-                filename_output = "holisticware-generated/decompilers/output-javap.custom-task.classes";
+                decompiler = "javap";
+                filename_error = 
+                        $"holisticware-generated" +"/" + "decompilers" 
+                        + "/" + 
+                        $"{artifact_name}-stderr-{decompiler}.API-custom-task.log"
+                        ;
+                filename_output =
+                        $"holisticware-generated" + "/" + "decompilers"
+                        + "/" +
+                        $"{artifact_name}-stdout-{decompiler}.API-custom-task.classes"
+                        ;
                 ProcessStart
                 (
                     $@"javap",
@@ -86,14 +105,22 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
             {
                 if (JarBinaryDecompiler.ToLower().Contains("procyon-decompiler-0.5.30.jar"))
                 {
-                    filename_error = "holisticware-generated/decompilers/error-procyon.custom-task.log";
-                    filename_output = "holisticware-generated/decompilers/output-procyon.custom-task.classes";
-                    /*
+                     /*
                     java \
                         -jar ./procyon-decompiler-0.5.30.jar \
                         -jar ../../../../externals/android/grpc-stub-1.14.0.jar > 
-
                     */
+                    decompiler = "procyon";
+                    filename_error =
+                            $"holisticware-generated" + "/" + "decompilers"
+                            + "/" +
+                            $"{artifact_name}-stderr-{decompiler}.API-custom-task.log"
+                            ;
+                    filename_output =
+                            $"holisticware-generated" + "/" + "decompilers"
+                            + "/" +
+                            $"{artifact_name}-stdout-{decompiler}.API-custom-task.classes"
+                            ;
                     ProcessStart
                     (
                         $@"java",
@@ -102,13 +129,22 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                 }
                 else if (JarBinaryDecompiler.ToLower().Contains("cfr_0_132.jar"))
                 {
-                    filename_error = "holisticware-generated/decompilers/error-cfr.custom-task.log";
-                    filename_output = "holisticware-generated/decompilers/output-cfr.custom-task.classes";
                     /*
                     java \
                         -jar ./cfr_0_132.jar \
                         -jar ../../../../externals/android/grpc-protobuf-lite-1.14.0.jar
                     */
+                    decompiler = "cfr";
+                    filename_error =
+                            $"holisticware-generated" + "/" + "decompilers"
+                            + "/" +
+                            $"{artifact_name}-stderr-{decompiler}.API-custom-task.log"
+                            ;
+                    filename_output =
+                            $"holisticware-generated" + "/" + "decompilers"
+                            + "/" +
+                            $"{artifact_name}-stdout-{decompiler}.API-custom-task.classes"
+                            ;
                     ProcessStart
                     (
                         $@"java",
@@ -117,8 +153,17 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                 }
                 else if (JarBinaryDecompiler.ToLower().Contains("bytecode-viewer-2.9.11.jar"))
                 {
-                    filename_error = "holisticware-generated/decompilers/error-bytecode-viewer.log";
-                    filename_output = "holisticware-generated/decompilers/output-bytecode-viewer.classes";
+                    decompiler = "bytecode-viewer-procyon";
+                    filename_error =
+                            $"holisticware-generated" + "/" + "decompilers"
+                            + "/" +
+                            $"{artifact_name}-stderr-{decompiler}.API-custom-task.log"
+                            ;
+                    filename_output =
+                            $"holisticware-generated" + "/" + "decompilers"
+                            + "/" +
+                            $"{artifact_name}-stdout-{decompiler}.API-custom-task.classes"
+                            ;
                     ProcessStart
                     (
                         $@"java",

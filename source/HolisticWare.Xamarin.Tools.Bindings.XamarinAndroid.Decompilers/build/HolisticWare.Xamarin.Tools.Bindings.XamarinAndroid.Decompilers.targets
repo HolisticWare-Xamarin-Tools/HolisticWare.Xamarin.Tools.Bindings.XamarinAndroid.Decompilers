@@ -14,20 +14,29 @@
         
         <BindingsHelperFolderDecompilerOutput>$(BindingsHelperFolderInProject)/decompilers</BindingsHelperFolderDecompilerOutput>  
         <BindingsHelperFolderLibs>$(BindingsHelperFolderInProject)/lib/</BindingsHelperFolderLibs>  
-        <BindingsHelperFolderLibsInNuget>$(MSBuildThisFileDirectory)../lib/</BindingsHelperFolderLibsInNuget>
-        
+        <BindingsHelperFolderLibsInNuget>$(MSBuildThisFileDirectory)../lib/</BindingsHelperFolderLibsInNuget>        
     </PropertyGroup>  
-    
-    <Target 
-        Name="BindingsHelpersClean" 
-        BeforeTargets="Build;Clean"
-        >  
-        <Message Text="mc++ AfterTargets=Clean" />  
+        
+    <PropertyGroup>
+        <RunCLIJavaDecompilerProcyon Condition="'$(RunCLIJavaDecompilerProcyon)'==''">true</RunCLIJavaDecompilerProcyon>
+        <RunCLIJavaDecompilerCFR Condition="'$(RunCLIJavaDecompilerCFR)'==''">true</RunCLIJavaDecompilerCFR>
+        <RunCLIJavaDecompilerBytecodeViewerProcyon Condition="'$(RunCLIJavaDecompilerBytecodeViewerProcyon)'==''">true</RunCLIJavaDecompilerBytecodeViewerProcyon>
+        <RunCLIJavaDecompilerBytecodeViewerCFR Condition="'$(RunCLIJavaDecompilerBytecodeViewerCFR)'==''">true</RunCLIJavaDecompilerBytecodeViewerCFR>
         <!--
-        <RemoveDir Directories="$(BindingsHelperFolder)" />  
+            Bytecode Viewer support for Krakatau - needs Python/PyPy support
+        -->        
+        <RunCLIJavaDecompilerBytecodeViewerKrakatau Condition="'$(RunCLIJavaDecompilerBytecodeViewerKrakatau)'==''">false</RunCLIJavaDecompilerBytecodeViewerKrakatau>
+        <RunCLIJavaDecompilerBytecodeViewerKrakatauBytecode Condition="'$(RunCLIJavaDecompilerBytecodeViewerKrakatauBytecode)'==''">false</RunCLIJavaDecompilerBytecodeViewerKrakatauBytecode>
+        <!--
+            Bytecode Viewer support for JD GUI - comming soon
         -->
-    </Target>
-    
+        <RunCLIJavaDecompilerBytecodeViewerJDGUI Condition="'$(RunCLIJavaDecompilerBytecodeViewerJDGUI)'==''">false</RunCLIJavaDecompilerBytecodeViewerJDGUI>
+        <!--
+            Bytecode Viewer support for Smali - comming soon
+        -->
+        <RunCLIJavaDecompilerBytecodeViewerSmali Condition="'$(RunCLIJavaDecompilerBytecodeViewerSmali)'==''">false</RunCLIJavaDecompilerBytecodeViewerSmali>                
+    </PropertyGroup>
+        
     <Target 
         Name="BindingsHelpersInit" 
         BeforeTargets="CoreCompile"
@@ -160,6 +169,7 @@
         BeforeTargets="CoreCompile"
         >
         <Exec 
+            Condition=" '$(RunCLIJavaDecompilerProcyon)' == 'true' "            
             Command="java -jar $(BindingsHelperFolderLibsInNuget)/procyon-decompiler-0.5.30.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).procyon.dump.cli.classes"
             /> 
     </Target>
@@ -168,13 +178,8 @@
         Condition=" '$(Sdk)'=='Microsoft.NET.Sdk' " 
         BeforeTargets="CoreCompile"
         >
-        <Exec Command="pwd" ></Exec>
-        
-        <Message Text="mc++ SDK style project - Exec fails! Why? No idea..." Importance="high"></Message>
-        <!--
-        -->
-        
         <Exec 
+            Condition=" '$(RunCLIJavaDecompilerProcyon)' == 'true' "            
             Command="java -jar $(BindingsHelperFolderLibsInNuget)/procyon-decompiler-0.5.30.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).procyon.dump.cli.classes"
             /> 
     </Target>
@@ -195,6 +200,7 @@
         BeforeTargets="CoreCompile"
         >
         <Exec 
+            Condition=" '$(RunCLIJavaDecompilerCFR)' == 'true' "
             Command="java -jar $(BindingsHelperFolderLibsInNuget)/cfr_0_132.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).cfr.dump.cli.classes"
             /> 
     </Target>
@@ -203,21 +209,8 @@
         Condition=" '$(Sdk)'=='Microsoft.NET.Sdk' " 
         BeforeTargets="CoreCompile"
         >
-        <!--
-            EXEC: Error: Unable to access jarfile lib/cfr_0_132.jar (Sample.XamarinAndroid.Bindings.SDK)
-            0.0.3/build/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets(9,9): 
-            Error MSB3073: 
-            The command 
-                "\
-                java \
-                -jar lib/cfr_0_132.jar \
-                -jar /Projects/hw-tools/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers/externals/android/grpc-stub-1.14.0.jar \
-                > \
-                holisticware-generated/decompilers/cfr.1.grpc-stub-1.14.0.dump.class
-                " 
-            exited with code 1. 
-        -->        
         <Exec 
+            Condition=" '$(RunCLIJavaDecompilerCFR)' == 'true' "
             Command="java -jar $(BindingsHelperFolderLibsInNuget)/cfr_0_132.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).cfr.dump.cli.classes"
             /> 
     </Target>
@@ -255,6 +248,7 @@
         BeforeTargets="CoreCompile"
         >
         <Exec 
+            Condition=" '$(RunCLIJavaDecompilerBytecodeViewerProcyon)' == 'true' "
             Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler Procyon -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-procyon.dump.cli.classes.zip"
             /> 
     </Target>
@@ -263,6 +257,7 @@
         BeforeTargets="CoreCompile"
         >
         <Exec 
+            Condition=" '$(RunCLIJavaDecompilerBytecodeViewerCFR)' == 'true' "
             Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler CFR -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-cfr.dump.cli.classes.zip"
             /> 
     </Target>
@@ -271,34 +266,34 @@
         BeforeTargets="CoreCompile"
         >
         <Exec 
+            Condition=" '$(RunCLIJavaDecompilerBytecodeViewerFernFlower)' == 'true' "
             Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler FernFlower -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-fernflower.dump.cli.classes.zip"
             /> 
     </Target>
-    <!--
     <Target
         Name="DecompileJavaBytecodeViewerKrakatau" 
         BeforeTargets="CoreCompile"
         >
         <Exec 
+            Condition=" '$(RunCLIJavaDecompilerBytecodeViewerKrakatau)' == 'true' "            
             Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler Krakatau -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-krakatau.dump.cli.classes.zip"
             /> 
     </Target>
-    -->
-    <!--
     <Target
         Name="DecompileJavaBytecodeViewerKrakatauBytecode" 
         BeforeTargets="CoreCompile"
         >
         <Exec 
+            Condition=" '$(RunCLIJavaDecompilerBytecodeViewerKrakatauBytecode)' == 'true' "            
             Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler Krakatau-Bytecode -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-krakatau-bytecode.dump.cli.classes.zip"
             /> 
     </Target>
-    -->
     <Target
         Name="DecompileJavaBytecodeViewerJDGUI" 
         BeforeTargets="CoreCompile"
         >
         <Exec 
+            Condition=" '$(RunCLIJavaDecompilerBytecodeViewerJDGUI)' == 'true' "            
             Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler JD-GUI -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-jd-gui.dump.cli.classes.zip"
             /> 
     </Target>
@@ -307,33 +302,35 @@
         BeforeTargets="CoreCompile"
         >
         <Exec 
+            Condition=" '$(RunCLIJavaDecompilerBytecodeViewerSmali)' == 'true' "            
             Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler Smali -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-smali.dump.cli.classes.zip"
             /> 
     </Target>
     
-  <PropertyGroup>
-    <TaskFolder>netstandard2.0</TaskFolder>
-    <!--
-    <TaskFolder Condition=" '$(MSBuildRuntimeType)' != 'Core' ">net46</TaskFolder>
-    -->
-    <TaskAssembly>$(MSBuildThisFileDirectory)..\tools\$(TaskFolder)\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.dll</TaskAssembly>
-  </PropertyGroup>
+  
+    <PropertyGroup>
+        <TaskFolder>netstandard2.0</TaskFolder>
+        <!--
+            <TaskFolder Condition=" '$(MSBuildRuntimeType)' != 'Core' ">net46</TaskFolder>        
+        -->
+        <TaskAssembly>$(MSBuildThisFileDirectory)..\tools\$(TaskFolder)\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.dll</TaskAssembly>
+    </PropertyGroup>
 
-  <UsingTask 
+    <UsingTask 
         TaskName="HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries" 
         AssemblyFile="$(TaskAssembly)" 
         />
-    <Target
-        Name="Run_DecompilerTaskForJavaBinaries" 
-        BeforeTargets="CoreCompile"
-        >
-        <Message Text="mc++ Target=DecompilerTaskForJavaBinaries"></Message>
-        <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
-            Executable="javap"
-            JarBinaryDecompiler="javap"
-            JarBinaryAndroidArtifact="%(ArtifactJarsToDecompile.FullPath)"
-            Options=" "
-            >            
+        <Target
+            Name="Run_DecompilerTaskForJavaBinaries" 
+            BeforeTargets="CoreCompile"
+            >
+            <Message Text="mc++ Target=DecompilerTaskForJavaBinaries"></Message>
+            <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
+                Executable="javap"
+                JarBinaryDecompiler="javap"
+                JarBinaryAndroidArtifact="%(ArtifactJarsToDecompile.FullPath)"
+                Options=" "
+                >            
         </HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries>
         <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
             Executable="java"
