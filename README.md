@@ -30,7 +30,19 @@ so any kind of suggestions, ideas, constructive criticism is accepted.
 
 ## Usage
 
-1.  install nuget package `HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers`
+1.  install nuget package 
+
+    `HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers`
+
+    via:
+
+    `Install-Package HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers`
+
+    `dotnet add package HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers`
+
+    `paket add HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers`
+
+    https://www.nuget.org/packages?q=HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
 
 2.  do the bindings and decompiled code will be in `./holisticware-generated/decompilers`
 
