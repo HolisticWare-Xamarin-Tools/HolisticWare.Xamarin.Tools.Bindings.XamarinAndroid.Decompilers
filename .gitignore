@@ -9,6 +9,7 @@
 
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
+**/mono_crash.*.*.json
 
 # Build results
 [Dd]ebug/
@@ -325,16 +326,6 @@ src/samples/Components/**
 source/samples/Components/**
 #----------------------------------------------
 
-#------------------------------------------
-# Visual Studio Code
-# NOTE: these are for team settings.
-.vscode/*
-!.vscode/settings.json
-!.vscode/tasks.json
-!.vscode/launch.json
-!.vscode/extensions.json
-#------------------------------------------
-
 #----------------------------------------------
 # sensitive data
 **/*.hidden.cs
@@ -456,19 +447,14 @@ lib/**
 #------------------------------------------
 
 #------------------------------------------
-# JetBrains IntelliJ Rider IDE
-**/.idea/
-#------------------------------------------
-
-#------------------------------------------
 # Cake Build
 tools/**
-!tools/packages.config
 #------------------------------------------
 
 #------------------------------------------
 # Xamarin CI project structure
 output/**
+#externals/**
 #------------------------------------------
 
 #------------------------------------------
@@ -477,16 +463,20 @@ output/**
 #------------------------------------------
 
 #------------------------------------------
-# MFractor
-**/.mfractor
+# MFractor files
+**/.mfractor/**
 #------------------------------------------
 
 #------------------------------------------
-# Python
-# Byte-compiled / optimized / DLL files
-__pycache__/
-*.py[cod]
-*$py.class
+# JetBrains IntelliJ Rider IDE
+# Rider files
+**/.idea/
+**/.idea/**
+#------------------------------------------
+
+#------------------------------------------
+# Python files
+**/__pycache__/**
 #------------------------------------------
 
 #==============================================================================
