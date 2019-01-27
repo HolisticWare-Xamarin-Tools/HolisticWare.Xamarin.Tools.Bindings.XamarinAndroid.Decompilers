@@ -44,6 +44,39 @@ so any kind of suggestions, ideas, constructive criticism is accepted.
 
     https://www.nuget.org/packages?q=HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
 
+2.  configure decompilers used in project file `*.csproj`
+
+    ```xml
+    <PropertyGroup>
+        <!--
+            Customizations default values:
+        
+            *   CLI - commandline CLI calls from EXEC 
+        
+                due to stdout and stderr redirection and piping some calls implemented only with API (javap)
+        
+            *   API - custom tasks in C# code        
+        -->
+        <RunCLIJavaDecompilerProcyon>true</RunCLIJavaDecompilerProcyon>
+        <RunCLIJavaDecompilerCFR>true</RunCLIJavaDecompilerCFR>
+        <RunCLIJavaDecompilerBytecodeViewerProcyon>true</RunCLIJavaDecompilerBytecodeViewerProcyon>
+        <RunCLIJavaDecompilerBytecodeViewerCFR>true</RunCLIJavaDecompilerBytecodeViewerCFR>
+        <!--
+            Bytecode Viewer support for Krakatau - needs Python/PyPy support
+        -->        
+        <RunCLIJavaDecompilerBytecodeViewerKrakatau>false</RunCLIJavaDecompilerBytecodeViewerKrakatau>
+        <RunCLIJavaDecompilerBytecodeViewerKrakatauBytecode>false</RunCLIJavaDecompilerBytecodeViewerKrakatauBytecode>
+        <!--
+            Bytecode Viewer support for JD GUI - comming soon
+        -->
+        <RunCLIJavaDecompilerBytecodeViewerJDGUI>true</RunCLIJavaDecompilerBytecodeViewerJDGUI>
+        <!--
+            Bytecode Viewer support for Smali - comming soon
+        -->
+        <RunCLIJavaDecompilerBytecodeViewerSmali>true</RunCLIJavaDecompilerBytecodeViewerSmali>                
+    </PropertyGroup>
+    ```
+
 2.  do the bindings and decompiled code will be in `./holisticware-generated/decompilers`
 
 3.  uninstall nuget package after bindings are done
@@ -83,7 +116,9 @@ and of course several commandline options:
 
 3.	CFR decompiler
 
-4. ...
+4. `smali` and `baksmali`
+
+5.  ...
 
 This nuget package adds automatic decompiler dumps to Build target of the Xamarin.Android bindings
 projects.
