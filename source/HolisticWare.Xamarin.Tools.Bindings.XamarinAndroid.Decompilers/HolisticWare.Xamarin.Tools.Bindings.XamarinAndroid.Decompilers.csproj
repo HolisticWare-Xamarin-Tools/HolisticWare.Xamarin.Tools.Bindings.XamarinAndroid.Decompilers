@@ -56,11 +56,11 @@
         <RepositoryUrl>
             https://github.com/moljac/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
         </RepositoryUrl>
-        <VersionPrefix>0.0.5</VersionPrefix>
+        <VersionPrefix>0.0.6</VersionPrefix>
         <!--
         VersionSuffix - For debugging and local nuget feed 
-        <VersionSuffix>alpha-$([System.DateTime]::Now.ToString('yyyyMMddHHmmss'))</VersionSuffix>
         -->        
+        <VersionSuffix>alpha-$([System.DateTime]::Now.ToString('yyyyMMddHHmmss'))</VersionSuffix>
         <PackageVersion>$(Version)</PackageVersion>
         <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
         <PackageTags>xamarin, android, bindings, utilities, decompilers </PackageTags>
@@ -102,9 +102,6 @@
         
         PackagePath="lib"
         -->
-        <Content Include="$(BindingsHelperFolder)/.gitignore" Pack="true">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
         <Content Include="$(BindingsHelperFolderDecompilerOutput)/.gitignore" Pack="true">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
@@ -120,6 +117,10 @@
         <None Include="$(BindingsHelperFolderLibs)/Bytecode-Viewer-2.9.11.jar" Pack="true" PackagePath="lib/">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
+        <Content Include="$(BindingsHelperFolder)/.gitignore">
+          <Pack>true</Pack>
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+        </Content>
     </ItemGroup>
 
   <ItemGroup>

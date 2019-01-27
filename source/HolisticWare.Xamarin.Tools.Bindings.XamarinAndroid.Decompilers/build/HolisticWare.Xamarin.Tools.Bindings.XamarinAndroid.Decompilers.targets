@@ -20,8 +20,8 @@
     <PropertyGroup>
         <RunCLIJavaDecompilerProcyon Condition="'$(RunCLIJavaDecompilerProcyon)'==''">true</RunCLIJavaDecompilerProcyon>
         <RunCLIJavaDecompilerCFR Condition="'$(RunCLIJavaDecompilerCFR)'==''">true</RunCLIJavaDecompilerCFR>
-        <RunCLIJavaDecompilerBytecodeViewerProcyon Condition="'$(RunCLIJavaDecompilerBytecodeViewerProcyon)'==''">true</RunCLIJavaDecompilerBytecodeViewerProcyon>
-        <RunCLIJavaDecompilerBytecodeViewerCFR Condition="'$(RunCLIJavaDecompilerBytecodeViewerCFR)'==''">true</RunCLIJavaDecompilerBytecodeViewerCFR>
+        <RunCLIJavaDecompilerBytecodeViewerProcyon Condition="'$(RunCLIJavaDecompilerBytecodeViewerProcyon)'==''">false</RunCLIJavaDecompilerBytecodeViewerProcyon>
+        <RunCLIJavaDecompilerBytecodeViewerCFR Condition="'$(RunCLIJavaDecompilerBytecodeViewerCFR)'==''">false</RunCLIJavaDecompilerBytecodeViewerCFR>
         <!--
             Bytecode Viewer support for Krakatau - needs Python/PyPy support
         -->        
