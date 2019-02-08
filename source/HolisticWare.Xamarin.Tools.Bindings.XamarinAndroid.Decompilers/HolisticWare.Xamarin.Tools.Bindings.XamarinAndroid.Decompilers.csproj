@@ -52,14 +52,20 @@
         </Description>
         <Owners>HolisticWare</Owners>
         <Authors>HolisticWare</Authors>
-        <Copyright>2018</Copyright>
+        <Copyright>2019</Copyright>
         <RepositoryUrl>
             https://github.com/moljac/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
         </RepositoryUrl>
-        <VersionPrefix>0.0.6</VersionPrefix>
+        <PackageLicenseUrl>
+            https://github.com/moljac/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers/blob/master/LICENSE
+        </PackageLicenseUrl>
+        <PackageProjectUrl>
+            https://github.com/moljac/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers            
+        </PackageProjectUrl>
+        <VersionPrefix>0.0.7</VersionPrefix>
         <!--
         VersionSuffix - For debugging and local nuget feed 
-        -->        
+        -->
         <VersionSuffix>alpha-$([System.DateTime]::Now.ToString('yyyyMMddHHmmss'))</VersionSuffix>
         <PackageVersion>$(Version)</PackageVersion>
         <DisableImplicitFrameworkReferences>true</DisableImplicitFrameworkReferences>
@@ -94,14 +100,6 @@
     <ItemGroup>
         <None Include="$(MSBuildThisFileDirectory)/build/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" PackagePath="build/" Pack="true">
         </None>
-        <None Include="$(MSBuildThisFileDirectory)/build/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props" PackagePath="build/" Pack="true">
-        </None>
-        <!--
-        https://docs.microsoft.com/en-us/dotnet/core/tools/csproj#contenttargetfolders
-        https://docs.microsoft.com/en-us/nuget/reference/msbuild-targets#including-content-in-a-package
-        
-        PackagePath="lib"
-        -->
         <Content Include="$(BindingsHelperFolderDecompilerOutput)/.gitignore" Pack="true">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
@@ -121,6 +119,7 @@
           <Pack>true</Pack>
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
+        <None Include="build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props" />
     </ItemGroup>
 
   <ItemGroup>
