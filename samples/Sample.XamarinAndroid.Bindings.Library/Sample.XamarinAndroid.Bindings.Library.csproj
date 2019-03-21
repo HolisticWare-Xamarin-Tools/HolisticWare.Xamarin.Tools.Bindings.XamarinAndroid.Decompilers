@@ -93,5 +93,5 @@
         <RunCLIJavaDecompilerBytecodeViewerSmali>true</RunCLIJavaDecompilerBytecodeViewerSmali>                
     </PropertyGroup>
     
-    <Import Project="..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.6-alpha-20190208121018\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" Condition="Exists('..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.6-alpha-20190208121018\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets')" />
+    <Import Project="..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.6\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" Condition="Exists('..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.6\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets')" />
 </Project>
