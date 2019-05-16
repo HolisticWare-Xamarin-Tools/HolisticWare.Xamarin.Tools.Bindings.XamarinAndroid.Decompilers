@@ -103,11 +103,11 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
             }
             else
             {
-                if (JarBinaryDecompiler.ToLower().Contains("procyon-decompiler-0.5.30.jar"))
+                if (JarBinaryDecompiler.ToLower().Contains("procyon-decompiler-0.5.34.jar"))
                 {
                      /*
                     java \
-                        -jar ./procyon-decompiler-0.5.30.jar \
+                        -jar ./procyon-decompiler-0.5.34.jar \
                         -jar ../../../../externals/android/grpc-stub-1.14.0.jar > 
                     */
                     decompiler = "procyon";
@@ -127,11 +127,11 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                         $@"-jar {JarBinaryDecompiler} -jar {JarBinaryAndroidArtifact} {Options} "
                     );
                 }
-                else if (JarBinaryDecompiler.ToLower().Contains("cfr_0_132.jar"))
+                else if (JarBinaryDecompiler.ToLower().Contains("cfr-0.144.jar"))
                 {
                     /*
                     java \
-                        -jar ./cfr_0_132.jar \
+                        -jar ./cfr-0.144.jar \
                         -jar ../../../../externals/android/grpc-protobuf-lite-1.14.0.jar
                     */
                     decompiler = "cfr";
@@ -151,7 +151,7 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                         $@"-jar {JarBinaryDecompiler} -jar {JarBinaryAndroidArtifact} {Options} "
                     );
                 }
-                else if (JarBinaryDecompiler.ToLower().Contains("bytecode-viewer-2.9.11.jar"))
+                else if (JarBinaryDecompiler.ToLower().Contains("Bytecode-Viewer-2.9.19.jar"))
                 {
                     decompiler = "bytecode-viewer-procyon";
                     filename_error =

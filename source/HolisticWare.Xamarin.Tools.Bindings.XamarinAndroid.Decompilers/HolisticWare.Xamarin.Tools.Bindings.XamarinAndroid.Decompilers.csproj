@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <!-- 
   HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.csproj 
   -->
@@ -106,13 +106,13 @@
         <Content Include="$(BindingsHelperFolderLibs)/.gitignore" Pack="true">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </Content>
-        <None Include="$(BindingsHelperFolderLibs)/procyon-decompiler-0.5.30.jar" Pack="true" PackagePath="lib/">
+        <None Include="$(BindingsHelperFolderLibs)/procyon-decompiler-0.5.34.jar" Pack="true" PackagePath="lib/">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Include="$(BindingsHelperFolderLibs)/cfr_0_132.jar" Pack="true" PackagePath="lib/">
+        <None Include="$(BindingsHelperFolderLibs)/cfr-0.144.jar" Pack="true" PackagePath="lib/">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
-        <None Include="$(BindingsHelperFolderLibs)/Bytecode-Viewer-2.9.11.jar" Pack="true" PackagePath="lib/">
+        <None Include="$(BindingsHelperFolderLibs)/Bytecode-Viewer-2.9.19.jar" Pack="true" PackagePath="lib/">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
         </None>
         <Content Include="$(BindingsHelperFolder)/.gitignore">

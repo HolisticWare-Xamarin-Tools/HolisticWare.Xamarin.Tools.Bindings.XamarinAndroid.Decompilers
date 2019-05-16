@@ -61,20 +61,20 @@
         https://github.com/netonjm/GtkSharp.NuGet/pull/1/files
         -->
         <None 
-            Include="$(MSBuildThisFileDirectory)/../lib/procyon-decompiler-0.5.30.jar"
+            Include="$(MSBuildThisFileDirectory)/../lib/procyon-decompiler-0.5.34.jar"
             >
-            <Link>lib/procyon-decompiler-0.5.30.jar</Link>
+            <Link>lib/procyon-decompiler-0.5.34</Link>
             <CopyToOutputDirectory>Allways</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <Visible>true</Visible>
         </None>
-        <None Include="$(MSBuildThisFileDirectory)/../lib/cfr_0_132.jar">
-            <Link>lib/cfr_0_132.jar</Link>
+        <None Include="$(MSBuildThisFileDirectory)/../lib/cfr-0.144.jar">
+            <Link>lib/cfr-0.144.jar</Link>
             <CopyToOutputDirectory>Allways</CopyToOutputDirectory>
             <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
             <Visible>true</Visible>
         </None>
-        <None Include="$(MSBuildThisFileDirectory)/../lib/Bytecode-Viewer-2.9.11.jar">
+        <None Include="$(MSBuildThisFileDirectory)/../lib/Bytecode-Viewer-2.9.19.jar">
             <CopyToOutputDirectory>Allways</CopyToOutputDirectory>
             <Visible>true</Visible>
         </None>
@@ -159,7 +159,7 @@
 
     export JAR_ARTIFACT=../../../../externals/android/grpc-stub-1.14.0.jar
     java \
-        -jar ./procyon-decompiler-0.5.30.jar \
+        -jar ./procyon-decompiler-0.5.34 \
         -jar $JAR_ARTIFACT/grpc-stub-1.14.0.jar \
         dump/
     -->
@@ -170,7 +170,7 @@
         >
         <Exec 
             Condition=" '$(RunCLIJavaDecompilerProcyon)' == 'true' "            
-            Command="java -jar $(BindingsHelperFolderLibsInNuget)/procyon-decompiler-0.5.30.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).procyon.dump.cli.classes"
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/procyon-decompiler-0.5.34.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).procyon.dump.cli.classes"
             /> 
     </Target>
     <Target
@@ -180,7 +180,7 @@
         >
         <Exec 
             Condition=" '$(RunCLIJavaDecompilerProcyon)' == 'true' "            
-            Command="java -jar $(BindingsHelperFolderLibsInNuget)/procyon-decompiler-0.5.30.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).procyon.dump.cli.classes"
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/procyon-decompiler-0.5.34 -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).procyon.dump.cli.classes"
             /> 
     </Target>
 
@@ -191,7 +191,7 @@
 
     export JAR_ARTIFACT=../../../../externals/android/grpc-stub-1.14.0.jar
     java \
-        -jar ./cfr_0_132.jar \
+        -jar ./cfr-0.144.jar \
         -jar $JAR_ARTIFACT
     -->
     <Target 
@@ -201,7 +201,7 @@
         >
         <Exec 
             Condition=" '$(RunCLIJavaDecompilerCFR)' == 'true' "
-            Command="java -jar $(BindingsHelperFolderLibsInNuget)/cfr_0_132.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).cfr.dump.cli.classes"
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/cfr-0.144.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).cfr.dump.cli.classes"
             /> 
     </Target>
     <Target
@@ -211,12 +211,12 @@
         >
         <Exec 
             Condition=" '$(RunCLIJavaDecompilerCFR)' == 'true' "
-            Command="java -jar $(BindingsHelperFolderLibsInNuget)/cfr_0_132.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).cfr.dump.cli.classes"
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/cfr-0.144.jar -jar %(ArtifactJarsToDecompile.FullPath) > $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).cfr.dump.cli.classes"
             /> 
     </Target>
     
     <!--
-    java -jar Bytecode-Viewer-2.9.11.jar -help
+    java -jar Bytecode-Viewer-2.9.19.jar -help
     https://the.bytecode.club - Created by @Konloch - Bytecode Viewer 2.9.11, FatJar: true
     -help                         Displays the help menu
     -list                         Displays the available decompilers
@@ -226,7 +226,7 @@
     -t <target classname>         Must either be the fully qualified classname or "all" to decompile all as zip
     -nowait                       Doesn't wait for the user to read the CLI messages
     
-    java -jar Bytecode-Viewer-2.9.11.jar -list
+    java -jar Bytecode-Viewer-2.9.19.jar -list
         Procyon
         CFR
         FernFlower
@@ -237,7 +237,7 @@
     
     
     java \
-        -jar ~/bin/Bytecode-Viewer-2.9.11.jar \
+        -jar ~/bin/Bytecode-Viewer-2.9.19.jar \
         -t all \
         -i ../../externals/android/grpc-protobuf-lite-1.14.0.jar  \
         -o ./holisticware-generated/decompilers/Bytecode-Viewer-cfr.classes.zip \
@@ -249,7 +249,7 @@
         >
         <Exec 
             Condition=" '$(RunCLIJavaDecompilerBytecodeViewerProcyon)' == 'true' "
-            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler Procyon -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-procyon.dump.cli.classes.zip"
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.19.jar -decompiler Procyon -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-procyon.dump.cli.classes.zip"
             /> 
     </Target>
     <Target
@@ -258,7 +258,7 @@
         >
         <Exec 
             Condition=" '$(RunCLIJavaDecompilerBytecodeViewerCFR)' == 'true' "
-            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler CFR -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-cfr.dump.cli.classes.zip"
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.19.jar -decompiler CFR -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-cfr.dump.cli.classes.zip"
             /> 
     </Target>
     <Target
@@ -267,7 +267,7 @@
         >
         <Exec 
             Condition=" '$(RunCLIJavaDecompilerBytecodeViewerFernFlower)' == 'true' "
-            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler FernFlower -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-fernflower.dump.cli.classes.zip"
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.19.jar -decompiler FernFlower -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-fernflower.dump.cli.classes.zip"
             /> 
     </Target>
     <Target
@@ -276,7 +276,7 @@
         >
         <Exec 
             Condition=" '$(RunCLIJavaDecompilerBytecodeViewerKrakatau)' == 'true' "            
-            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler Krakatau -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-krakatau.dump.cli.classes.zip"
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.19.jar -decompiler Krakatau -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-krakatau.dump.cli.classes.zip"
             /> 
     </Target>
     <Target
@@ -285,7 +285,7 @@
         >
         <Exec 
             Condition=" '$(RunCLIJavaDecompilerBytecodeViewerKrakatauBytecode)' == 'true' "            
-            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler Krakatau-Bytecode -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-krakatau-bytecode.dump.cli.classes.zip"
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.19.jar -decompiler Krakatau-Bytecode -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-krakatau-bytecode.dump.cli.classes.zip"
             /> 
     </Target>
     <Target
@@ -294,7 +294,7 @@
         >
         <Exec 
             Condition=" '$(RunCLIJavaDecompilerBytecodeViewerJDGUI)' == 'true' "            
-            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler JD-GUI -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-jd-gui.dump.cli.classes.zip"
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.19.jar -decompiler JD-GUI -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-jd-gui.dump.cli.classes.zip"
             /> 
     </Target>
     <Target
@@ -303,7 +303,7 @@
         >
         <Exec 
             Condition=" '$(RunCLIJavaDecompilerBytecodeViewerSmali)' == 'true' "            
-            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.11.jar -decompiler Smali -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-smali.dump.cli.classes.zip"
+            Command="java -jar $(BindingsHelperFolderLibsInNuget)/Bytecode-Viewer-2.9.19.jar -decompiler Smali -t all -i %(ArtifactJarsToDecompile.FullPath) -o $(BindingsHelperFolderDecompilerOutput)\%(ArtifactJarsToDecompile.Filename).bytecodeviewer-smali.dump.cli.classes.zip"
             /> 
     </Target>
     
@@ -334,14 +334,14 @@
         </HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries>
         <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
             Executable="java"
-            JarBinaryDecompiler="$(BindingsHelperFolderLibsInNuget)/procyon-decompiler-0.5.30.jar"
+            JarBinaryDecompiler="$(BindingsHelperFolderLibsInNuget)/procyon-decompiler-0.5.34.jar"
             JarBinaryAndroidArtifact="%(ArtifactJarsToDecompile.FullPath)"
             Options=" "
             >            
         </HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries>
         <HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries
             Executable="java"
-            JarBinaryDecompiler="$(BindingsHelperFolderLibsInNuget)/cfr_0_132.jar"
+            JarBinaryDecompiler="$(BindingsHelperFolderLibsInNuget)/cfr-0.144.jar"
             JarBinaryAndroidArtifact="%(ArtifactJarsToDecompile.FullPath)"
             Options=" "
             >            
