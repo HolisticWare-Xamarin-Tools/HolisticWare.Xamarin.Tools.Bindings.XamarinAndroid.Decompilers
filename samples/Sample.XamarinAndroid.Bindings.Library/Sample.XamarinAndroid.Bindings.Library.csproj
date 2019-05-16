@@ -47,10 +47,6 @@
   <ItemGroup>
     <None Include="Additions\AboutAdditions.txt" />
     <None Include="Jars\AboutJars.txt" />
-    <None Include="holisticware-generated\lib\.gitignore" />
-    <None Include="holisticware-generated\decompilers\.gitignore" />
-    <None Include="holisticware-generated\.gitignore" />
-    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <TransformFile Include="Transforms\EnumFields.xml" />
@@ -93,5 +89,4 @@
         <RunCLIJavaDecompilerBytecodeViewerSmali>true</RunCLIJavaDecompilerBytecodeViewerSmali>                
     </PropertyGroup>
     
-    <Import Project="..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.6\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" Condition="Exists('..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.6\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets')" />
 </Project>
