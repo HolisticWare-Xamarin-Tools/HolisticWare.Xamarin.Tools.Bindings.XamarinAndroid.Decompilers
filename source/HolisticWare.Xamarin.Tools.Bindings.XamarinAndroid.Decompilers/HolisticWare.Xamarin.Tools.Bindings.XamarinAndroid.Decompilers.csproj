@@ -21,6 +21,10 @@
         Suppresses the warnings about the package not having assemblies in lib/*/.dll.
         -->
         <NoPackageAnalysis>true</NoPackageAnalysis>
+        <!--
+        
+        -->
+        <IncludeContentInPack>true</IncludeContentInPack>
         <!-- 
         Change the default location where NuGet will put the build output 
         
@@ -93,33 +97,71 @@
         <EnableDefaultItems>false</EnableDefaultItems>
         -->
         <BindingsHelperFolder>$(MSBuildThisFileDirectory)/holisticware-generated</BindingsHelperFolder>  
-        <BindingsHelperFolderDecompilerOutput>$(BindingsHelperFolder)/decompilers</BindingsHelperFolderDecompilerOutput>  
-        <BindingsHelperFolderLibs>$(BindingsHelperFolder)/lib</BindingsHelperFolderLibs>  
     </PropertyGroup>  
     
     <ItemGroup>
-        <None Include="$(MSBuildThisFileDirectory)/build/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" PackagePath="build/" Pack="true">
+        <None 
+            Include="$(MSBuildThisFileDirectory)/build/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" 
+            PackagePath="build/" 
+            Pack="true"
+            >
         </None>
-        <Content Include="$(BindingsHelperFolderDecompilerOutput)/.gitignore" Pack="true">
+        <None 
+            Include="build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props" 
+            />
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content 
+            Include="holisticware-generated/lib/.gitignore" 
+            >
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <Pack>true</Pack>
+            <PackagePath>contentFiles/any/any/holisticware-generated/lib</PackagePath>
         </Content>
-        <Content Include="$(BindingsHelperFolderLibs)/.gitignore" Pack="true">
+        <Content 
+            Include="holisticware-generated/lib/procyon-decompiler-0.5.34.jar" 
+            >
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <Pack>true</Pack>
+            <PackagePath>contentFiles/any/any/holisticware-generated/lib</PackagePath>
+       </Content>
+        <Content 
+            Include="holisticware-generated/lib/cfr-0.144.jar"
+            >
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <Pack>true</Pack>
+            <PackagePath>contentFiles/any/any/holisticware-generated/lib</PackagePath>
         </Content>
-        <None Include="$(BindingsHelperFolderLibs)/procyon-decompiler-0.5.34.jar" Pack="true" PackagePath="lib/">
+        <Content 
+            Include="holisticware-generated/lib//Bytecode-Viewer-2.9.19.jar"
+            >
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Include="$(BindingsHelperFolderLibs)/cfr-0.144.jar" Pack="true" PackagePath="lib/">
+            <Pack>true</Pack>
+            <PackagePath>contentFiles/any/any/holisticware-generated/lib</PackagePath>
+        </Content>
+        
+        <Content 
+            Include="holisticware-generated/.gitignore"
+            >
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <None Include="$(BindingsHelperFolderLibs)/Bytecode-Viewer-2.9.19.jar" Pack="true" PackagePath="lib/">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </None>
-        <Content Include="$(BindingsHelperFolder)/.gitignore">
-          <Pack>true</Pack>
+            <Pack>true</Pack>
+            <PackagePath>contentFiles/any/any/holisticware-generated</PackagePath>
+        </Content>
+        <Content 
+            Include="holisticware-generated/decompilers/.gitignore"
+            >
           <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-        </Content>
-        <None Include="build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props" />
+          <Pack>true</Pack>
+          <PackagePath>contentFiles/any/any/holisticware-generated/decompilers</PackagePath>
+        </Content> 
+        <Content 
+            Include="holisticware-generated/decompilers/README.md"
+            >
+          <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+          <Pack>true</Pack>
+          <PackagePath>contentFiles/any/any/holisticware-generated/decompilers</PackagePath>
+        </Content>        
     </ItemGroup>
 
   <ItemGroup>

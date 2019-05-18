@@ -9,12 +9,6 @@
         <!--
         <EnableDefaultItems>false</EnableDefaultItems>
         -->
-        <BindingsHelperFolder>holisticware-generated</BindingsHelperFolder>  
-        <BindingsHelperFolderInProject>$(MSBuildProjectDirectory)/$(BindingsHelperFolder)</BindingsHelperFolderInProject>  
-        
-        <BindingsHelperFolderDecompilerOutput>$(BindingsHelperFolderInProject)/decompilers</BindingsHelperFolderDecompilerOutput>  
-        <BindingsHelperFolderLibs>$(BindingsHelperFolderInProject)/lib/</BindingsHelperFolderLibs>  
-        <BindingsHelperFolderLibsInNuget>$(MSBuildThisFileDirectory)../lib/</BindingsHelperFolderLibsInNuget>        
     </PropertyGroup>  
         
     <PropertyGroup>
@@ -37,19 +31,72 @@
         <RunCLIJavaDecompilerBytecodeViewerSmali Condition="'$(RunCLIJavaDecompilerBytecodeViewerSmali)'==''">false</RunCLIJavaDecompilerBytecodeViewerSmali>                
     </PropertyGroup>
         
+    <PropertyGroup>
+        <BindingsHelperFolder>holisticware-generated</BindingsHelperFolder>  
+        
+        <BindingsHelperFolderInProject>$(MSBuildProjectDirectory)/$(BindingsHelperFolder)</BindingsHelperFolderInProject>        
+        <BindingsHelperFolderLibsInNuget>$(MSBuildThisFileDirectory)../lib/</BindingsHelperFolderLibsInNuget> 
+                
+        <BindingsHelperFolderDecompilerOutput>$(BindingsHelperFolderInProject)/decompilers</BindingsHelperFolderDecompilerOutput>  
+        <BindingsHelperFolderLibs>$(BindingsHelperFolderInProject)/lib/</BindingsHelperFolderLibs>
+    </PropertyGroup>
+        
+    <Target 
+        Name="DumpProperties_Folders" 
+        BeforeTargets="CoreCompile"
+        >
+        <Message Text="Dumping Properties - Folders mc++" Importance="high" />
+        <Message 
+            Text="BindingsHelperFolder                      = $(BindingsHelperFolder)" 
+            Importance="high" 
+            />
+        <Message Text="BindingsHelperFolderDecompilerOutput = $(BindingsHelperFolderDecompilerOutput)" Importance="high" />
+        <Message Text="BindingsHelperFolder          = $(BindingsHelperFolder)" Importance="high" />
+        <Message Text="BindingsHelperFolder          = $(BindingsHelperFolder)" Importance="high" />
+        <Message Text="BindingsHelperFolder          = $(BindingsHelperFolder)" Importance="high" />
+        
+    </Target>
+    
+    
+    <PropertyGroup>
+        <IsWindows Condition="'$(OS)' == 'Windows_NT'">true</IsWindows>
+    </PropertyGroup>
+
+    <PropertyGroup>
+        <IsOSX Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::OSX)))' == 'true'">true</IsOSX>
+        <IsLinux Condition="'$([System.Runtime.InteropServices.RuntimeInformation]::IsOSPlatform($([System.Runtime.InteropServices.OSPlatform]::Linux)))' == 'true'">true</IsLinux>
+    </PropertyGroup>
+
+    <Target Name="PrintRID" BeforeTargets="Build">
+        <Message Text="IsWindows $(IsWindows)" Importance="high" />
+        <Message Text="IsOSX $(IsOSX)" Importance="high" />
+        <Message Text="IsLinux $(IsLinux)" Importance="high" />
+    </Target>
     <Target 
         Name="BindingsHelpersInit" 
         BeforeTargets="CoreCompile"
-        >  
-        <MakeDir Directories="$(BindingsHelperFolder)" />  
-        <MakeDir Directories="$(BindingsHelperFolderLibs)" />  
-        <MakeDir Directories="$(BindingsHelperFolderDecompilerOutput)" />  
+        >
+        <!--
+        <MakeDir Directories="$(MSBuildProjectDirectory)/holisticware-generated/" />  
+        <MakeDir Directories="$(MSBuildProjectDirectory)/holisticware-generated/lib" />  
+        <MakeDir Directories="$(MSBuildProjectDirectory)/holisticware-generated/decompilers" />  
+        -->
+    </Target>
+    <Target 
+        Name="BindingsHelpersInitOSX" 
+        BeforeTargets="CoreCompile"
+        Condition="'$(IsOSX)'"
+        >
         
         <Exec Command="pwd"></Exec>
-        <Exec Command="ls -al $(BindingsHelperFolder)"></Exec>
-        <Exec Command="ls -al $(BindingsHelperFolderLibs)"></Exec>
-        <Exec Command="ls -al $(BindingsHelperFolderDecompilerOutput)"></Exec>
-        <Exec Command="ls -al $(BindingsHelperFolderLibsInNuget)"></Exec>
+        <Exec Command="ls -al $(MSBuildProjectDirectory)/holisticware-generated/"></Exec>
+        <Exec Command="ls -al $(MSBuildProjectDirectory)/holisticware-generated/lib"></Exec>
+        <Exec Command="ls -al $(MSBuildProjectDirectory)/holisticware-generated/decompilers"></Exec>
+        
+        <Copy      
+            SourceFiles="$(MSBuildThisFileDirectory)../holisticware-generated/"
+            DestinationFiles="$(MSBuildProjectDirectory)/holisticware-generated/"            
+        />
     </Target>
     
     <ItemGroup>
@@ -60,25 +107,24 @@
         <!--
         https://github.com/netonjm/GtkSharp.NuGet/pull/1/files
         -->
-        <None 
-            Include="$(MSBuildThisFileDirectory)/../lib/procyon-decompiler-0.5.34.jar"
+        <Content 
+            Include="$(MSBuildThisFileDirectory)/holisticware-generated/lib/procyon-decompiler-0.5.34.jar"
             >
-            <Link>lib/procyon-decompiler-0.5.34</Link>
-            <CopyToOutputDirectory>Allways</CopyToOutputDirectory>
-            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+            <Link>holisticware-generated/lib/procyon-decompiler-0.5.34</Link>
             <Visible>true</Visible>
-        </None>
-        <None Include="$(MSBuildThisFileDirectory)/../lib/cfr-0.144.jar">
-            <Link>lib/cfr-0.144.jar</Link>
-            <CopyToOutputDirectory>Allways</CopyToOutputDirectory>
-            <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+        </Content>
+        <Content 
+            Include="$(MSBuildThisFileDirectory)/holisticware-generated/lib/cfr-0.144.jar"
+            >
+            <Link>holisticware-generated/lib/cfr-0.144.jar</Link>
             <Visible>true</Visible>
-        </None>
-        <None Include="$(MSBuildThisFileDirectory)/../lib/Bytecode-Viewer-2.9.19.jar">
-            <CopyToOutputDirectory>Allways</CopyToOutputDirectory>
+        </Content>
+        <Content 
+            Include="$(MSBuildThisFileDirectory)/holisticware-generated/lib/Bytecode-Viewer-2.9.19.jar"
+            >
+            <Link>holisticware-generated/lib/Bytecode-Viewer-2.9.19.jar</Link>
             <Visible>true</Visible>
-        </None>
-        <Folder Include="build/$(BindingsHelperFolderDecompilerOutput)/" />
+        </Content>
     </ItemGroup>
     <ItemGroup>
         <!--
