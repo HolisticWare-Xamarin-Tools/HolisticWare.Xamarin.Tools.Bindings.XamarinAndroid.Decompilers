@@ -50,7 +50,7 @@
             Text="BindingsHelperFolder                      = $(BindingsHelperFolder)" 
             Importance="high" 
             />
-        <Message Text="BindingsHelperFolderDecompilerOutput = $(BindingsHelperFolderDecompilerOutput)" Importance="high" />
+        <Message Text="BindingsHelperFolderDecompilerOutput = $(BindingsHelperFolderDecompilerOutput)"          Importance="high" />
         <Message Text="BindingsHelperFolder          = $(BindingsHelperFolder)" Importance="high" />
         <Message Text="BindingsHelperFolder          = $(BindingsHelperFolder)" Importance="high" />
         <Message Text="BindingsHelperFolder          = $(BindingsHelperFolder)" Importance="high" />
