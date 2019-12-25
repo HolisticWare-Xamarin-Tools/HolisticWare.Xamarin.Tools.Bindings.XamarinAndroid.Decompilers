@@ -4,6 +4,30 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
 {
     public class DecompilerTaskForJavaBinaries : Microsoft.Build.Utilities.Task
     {
+        // banner for visibility
+        // HolisticWare
+        // Xamarin.Android Build Tools
+        // Decompilers
+        // http://patorjk.com/software/taag/#p=display&c=c%2B%2B&f=Small%20Slant&t=HolisticWare%0AXamarin.Android%20Build%20Tools%0ADecompilers%0A%0A
+        string Banner =
+            @"
+//     __ __     ___     __  _    _      __                                                                         
+//    / // /__  / (_)__ / /_(_)__| | /| / /__ ________                                                              
+//   / _  / _ \/ / (_-</ __/ / __/ |/ |/ / _ `/ __/ -_)                                                             
+//  /_//_/\___/_/_/___/\__/_/\__/|__/|__/\_,_/_/  \__/                                                              
+//     _  __                    _        ___           __         _    __  ___       _ __   __  ______          __  
+//    | |/_/__ ___ _  ___ _____(_)__    / _ | ___  ___/ /______  (_)__/ / / _ )__ __(_) /__/ / /_  __/__  ___  / /__
+//   _>  </ _ `/  ' \/ _ `/ __/ / _ \_ / __ |/ _ \/ _  / __/ _ \/ / _  / / _  / // / / / _  /   / / / _ \/ _ \/ (_-<
+//  /_/|_|\_,_/_/_/_/\_,_/_/ /_/_//_(_)_/ |_/_//_/\_,_/_/  \___/_/\_,_/ /____/\_,_/_/_/\_,_/   /_/  \___/\___/_/___/
+//    / _ \___ _______  __ _  ___  (_) /__ _______                                                                  
+//   / // / -_) __/ _ \/  ' \/ _ \/ / / -_) __(_-<                                                                  
+//  /____/\__/\__/\___/_/_/_/ .__/_/_/\__/_/ /___/                                                                  
+//                         /_/
+
+        HolisticWare
+        Xamarin.Android Build Tools
+        Decompilers
+        ";
         [Microsoft.Build.Framework.Required]
         public string Executable
         {
@@ -38,9 +62,12 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
 
         public override bool Execute()
         {
+            Log.LogMessage(Banner);
+
             int position_slash_forward = JarBinaryAndroidArtifact.LastIndexOf('/');
             int length_name = JarBinaryAndroidArtifact.Length - position_slash_forward - 5;
             string artifact_name = JarBinaryAndroidArtifact.Substring(position_slash_forward + 1, length_name);
+
 
             Log.LogMessage($"DecompilerTaskForJavaBinaries.Execute: ");
             Log.LogMessage($"            Executable               : {Executable}");
@@ -103,11 +130,11 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
             }
             else
             {
-                if (JarBinaryDecompiler.ToLower().Contains("procyon-decompiler-0.5.34.jar"))
+                if (JarBinaryDecompiler.ToLower().Contains("procyon-decompiler-0.5.36.jar"))
                 {
                      /*
                     java \
-                        -jar ./procyon-decompiler-0.5.34.jar \
+                        -jar ./procyon-decompiler-0.5.36.jar \
                         -jar ../../../../externals/android/grpc-stub-1.14.0.jar > 
                     */
                     decompiler = "procyon";
@@ -127,11 +154,11 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                         $@"-jar {JarBinaryDecompiler} -jar {JarBinaryAndroidArtifact} {Options} "
                     );
                 }
-                else if (JarBinaryDecompiler.ToLower().Contains("cfr-0.144.jar"))
+                else if (JarBinaryDecompiler.ToLower().Contains("cfr-0.148.jar"))
                 {
                     /*
                     java \
-                        -jar ./cfr-0.144.jar \
+                        -jar ./cfr-0.148.jar \
                         -jar ../../../../externals/android/grpc-protobuf-lite-1.14.0.jar
                     */
                     decompiler = "cfr";
@@ -151,7 +178,7 @@ namespace HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
                         $@"-jar {JarBinaryDecompiler} -jar {JarBinaryAndroidArtifact} {Options} "
                     );
                 }
-                else if (JarBinaryDecompiler.ToLower().Contains("Bytecode-Viewer-2.9.19.jar"))
+                else if (JarBinaryDecompiler.ToLower().Contains("Bytecode-Viewer-2.9.22.jar"))
                 {
                     decompiler = "bytecode-viewer-procyon";
                     filename_error =
