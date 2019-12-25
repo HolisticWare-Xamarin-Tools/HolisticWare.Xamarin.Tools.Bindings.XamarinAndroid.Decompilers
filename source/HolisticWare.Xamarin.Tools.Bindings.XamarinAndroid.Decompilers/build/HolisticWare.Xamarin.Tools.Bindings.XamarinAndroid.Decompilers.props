@@ -1,0 +1,18 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<!-- 
+build/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props 
+-->
+<Project TreatAsLocalProperty="TaskFolder;TaskAssembly">
+  <PropertyGroup>
+    <TaskFolder Condition=" '$(MSBuildRuntimeType)' == 'Core' ">netstandard2.0</TaskFolder>
+    <!--
+    <TaskFolder Condition=" '$(MSBuildRuntimeType)' != 'Core' ">net46</TaskFolder>
+    -->
+    <TaskAssembly>$(MSBuildThisFileDirectory)..\tools\$(TaskFolder)\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.dll</TaskAssembly>
+  </PropertyGroup>
+
+  <UsingTask 
+        TaskName="HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.DecompilerTaskForJavaBinaries" 
+        AssemblyFile="$(TaskAssembly)" 
+        />
+</Project>
