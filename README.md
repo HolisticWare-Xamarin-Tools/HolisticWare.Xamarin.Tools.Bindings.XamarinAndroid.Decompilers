@@ -122,6 +122,12 @@ and of course several commandline options:
 
 2.	procyon decompiler used by Luyten
 
+    *   current version 0.5.36 (2019-06-20)
+
+    *   https://bitbucket.org/mstrobel/procyon/wiki/Java%20Decompiler
+    
+    *   https://bitbucket.org/mstrobel/procyon/downloads/
+
 3.	CFR decompiler
 
 4. `smali` and `baksmali`
