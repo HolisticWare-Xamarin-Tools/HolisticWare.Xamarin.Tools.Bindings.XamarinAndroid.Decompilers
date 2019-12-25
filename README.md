@@ -1,6 +1,14 @@
 # HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
 
+## Notes
 
+*   Current version has issues with newer Java versions. The decompiler binaries are being updated!
+
+*   Due to the fact that this tools are custom MSBuild tasks, changes in Xamarin.Android build process
+    might affect these tools.
+
+
+## Intro
 One of the key factors whether technology will be successful and accepted by users/consumers
 is certainly - ecosystem - 3rd part libraries, SDKs and tools.
 
