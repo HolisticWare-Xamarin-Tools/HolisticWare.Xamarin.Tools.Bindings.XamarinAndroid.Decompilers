@@ -127,12 +127,42 @@ and of course several commandline options:
     *   https://bitbucket.org/mstrobel/procyon/wiki/Java%20Decompiler
     
     *   https://bitbucket.org/mstrobel/procyon/downloads/
+    
+    *   https://github.com/ststeiger/procyon
 
 3.	CFR decompiler
 
+    *   current version 0.148 (2019-10)
+    
+    *   http://www.benf.org/other/cfr/
+    
+    *   https://github.com/leibnitz27/cfr
+
 4. `smali` and `baksmali`
 
-5.  ...
+    *   https://github.com/JesusFreke/smali
+    
+    *   https://bitbucket.org/JesusFreke/smali/downloads/
+
+5.  Krakatau
+
+    *   python 
+    
+    *   https://github.com/Storyyeller/Krakatau
+    
+6.  Candle
+
+    *   https://github.com/bradsdavis/candle-decompiler
+
+7.  Fernflower
+
+    *   https://github.com/JetBrains/intellij-community/tree/master/plugins/java-decompiler/engine
+
+8.  Java Decompiler 
+
+    *   http://java.decompiler.free.fr/
+
+9. JAD
 
 This nuget package adds automatic decompiler dumps to Build target of the Xamarin.Android bindings
 projects.
