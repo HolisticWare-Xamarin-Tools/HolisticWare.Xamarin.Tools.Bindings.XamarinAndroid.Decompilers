@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.7-alpha-20191226173308\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props" Condition="Exists('..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.7-alpha-20191226173308\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props')" />
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
@@ -91,5 +92,5 @@
     </PropertyGroup>
     
     <Import Project="..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.7-alpha-20190517104224\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" Condition="Exists('..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.7-alpha-20190517104224\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets')" />
-    <Import Project="..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.7-alpha-20191226000856\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" Condition="Exists('..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.7-alpha-20191226000856\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets')" />
+    <Import Project="..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.7-alpha-20191226173308\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" Condition="Exists('..\packages\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.0.0.7-alpha-20191226173308\build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets')" />
 </Project>
