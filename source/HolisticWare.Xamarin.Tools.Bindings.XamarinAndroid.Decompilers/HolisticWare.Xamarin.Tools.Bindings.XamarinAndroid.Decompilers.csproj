@@ -100,28 +100,20 @@
     </PropertyGroup>  
     
     <ItemGroup>
-        <None Include="$(MSBuildThisFileDirectory)/build/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" PackagePath="build/" Pack="true">
+        <None 
+            Include="$(MSBuildThisFileDirectory)/build/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" 
+            PackagePath="build/" 
+            Pack="true"
+            >
         </None>
-        <None Include="build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props" />
+        <None 
+            Include="build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props" 
+            PackagePath="build/" 
+            Pack="true"
+            />
     </ItemGroup>
 
     <ItemGroup>
-        <Content Include="Content/holisticware-generated/lib/procyon-decompiler-0.5.36.jar">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <Pack>true</Pack>
-            <PackagePath>contentFiles/any/any/holisticware-generated/lib</PackagePath>
-       </Content>
-        <Content Include="Content/holisticware-generated/lib/cfr-0.148.jar">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <Pack>true</Pack>
-            <PackagePath>contentFiles/any/any/holisticware-generated/lib</PackagePath>
-        </Content>
-        <Content Include="Content/holisticware-generated/lib//Bytecode-Viewer-2.9.22.jar">
-            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
-            <Pack>true</Pack>
-            <PackagePath>contentFiles/any/any/holisticware-generated/lib</PackagePath>
-        </Content>
-        
         <Content Include="Content/holisticware-generated/.gitignore">
             <CopyToOutputDirectory>Always</CopyToOutputDirectory>
             <Pack>true</Pack>
@@ -137,6 +129,23 @@
           <Pack>true</Pack>
           <PackagePath>contentFiles/any/any/holisticware-generated/decompilers</PackagePath>
         </Content>        
+        
+        <Content Include="Content/holisticware-generated/decompilers/lib/procyon-decompiler-0.5.36.jar">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <Pack>true</Pack>
+            <PackagePath>contentFiles/any/any/holisticware-generated/decompilers/lib</PackagePath>
+       </Content>
+        <Content Include="Content/holisticware-generated/decompilers/lib/cfr-0.148.jar">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <Pack>true</Pack>
+            <PackagePath>contentFiles/any/any/holisticware-generated/decompilers/lib</PackagePath>
+        </Content>
+        <Content Include="Content/holisticware-generated/decompilers/lib//Bytecode-Viewer-2.9.22.jar">
+            <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+            <Pack>true</Pack>
+            <PackagePath>contentFiles/any/any/holisticware-generated/decompilers/lib</PackagePath>
+        </Content>
+        
     </ItemGroup>
 
   <ItemGroup>
