@@ -3,9 +3,7 @@
   HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.csproj 
   -->
   <PropertyGroup>
-    <!--
-    <TargetFrameworks>netstandard2.0;net46</TargetFrameworks>
-    -->
+        
     <TargetFrameworks>netstandard2.0</TargetFrameworks>
     <PackOnBuild>true</PackOnBuild>
     <EnableDefaultItems>false</EnableDefaultItems>
@@ -39,7 +37,7 @@
         <!-- 
         put the package output into a nuget test folder 
         -->
-        <PackageOutputPath>$(HOME)/nuget-local</PackageOutputPath>
+        <PackageOutputPath>../../output</PackageOutputPath>
         
         <!-- 
         nuget packaging
@@ -91,26 +89,11 @@
     <PackageReference Update="@(PackageReference)" PrivateAssets="All" />        
   </ItemGroup>
 
-    
-    <PropertyGroup>  
-        <!--
-        <EnableDefaultItems>false</EnableDefaultItems>
-        -->
-        <BindingsHelperFolder>$(MSBuildThisFileDirectory)/holisticware-generated</BindingsHelperFolder>  
-    </PropertyGroup>  
-    
+        
     <ItemGroup>
-        <None 
-            Include="$(MSBuildThisFileDirectory)/build/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" 
-            PackagePath="build/" 
-            Pack="true"
-            >
+        <None Include="$(MSBuildThisFileDirectory)/build/HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.targets" PackagePath="build/" Pack="true">
         </None>
-        <None 
-            Include="build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props" 
-            PackagePath="build/" 
-            Pack="true"
-            />
+        <None Include="build\HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers.props" PackagePath="build/" Pack="true" />
     </ItemGroup>
 
     <ItemGroup>
@@ -146,9 +129,15 @@
             <PackagePath>contentFiles/any/any/holisticware-generated/decompilers/lib</PackagePath>
         </Content>
         
+        <Content Include="Test\TestFile.txt">
+            <Pack>true</Pack>
+        </Content>
     </ItemGroup>
 
   <ItemGroup>
     <Compile Include="DecompilerTaskForJavaBinaries.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Test\" />
   </ItemGroup>
 </Project>
