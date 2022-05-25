@@ -1,5 +1,9 @@
 # HolisticWare.Xamarin.Tools.Bindings.XamarinAndroid.Decompilers
 
+## TODO
+
+*   https://www.baeldung.com/java-view-jar-contents
+
 ## Notes
 
 *   Current version has issues with newer Java versions. The decompiler binaries are being updated!
